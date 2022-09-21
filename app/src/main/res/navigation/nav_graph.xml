@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/availableOrderBooksFragment">
+
+    <fragment
+        android:id="@+id/availableOrderBooksFragment"
+        android:name="com.example.cripto_challenge.ui.main.AvailableOrderBooksFragment"
+        android:label="AvailableOrderBooksFragment" >
+        <action
+            android:id="@+id/action_availableOrderBooksFragment_to_orderBookDetailFragment"
+            app:destination="@id/orderBookDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderBookDetailFragment"
+        android:name="com.example.cripto_challenge.ui.main.OrderBookDetailFragment"
+        android:label="OrderBookDetailFragment" >
+        <action
+            android:id="@+id/action_orderBookDetailFragment_to_availableOrderBooksFragment"
+            app:destination="@id/availableOrderBooksFragment" />
+    </fragment>
+</navigation>
