@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 
-data class OrderBookDto (
+data class OrderBookResponse (
     @SerializedName("asks")
     @Expose
-    var asks: List<OpenOrderDto>? = null,
+    var asks: List<OpenOrderResponse>? = null,
     @SerializedName("bids")
     @Expose
-    var bids: List<OpenOrderDto>? = null,
+    var bids: List<OpenOrderResponse>? = null,
     @SerializedName("updated_at")
     @Expose
     var updated_at: Date? = null,
@@ -25,11 +25,13 @@ data class OrderBookDto (
         OrderBook(
             asks = asks.toOrderBookList,
             bids = bids.toOrderBookList,
+            /*
             updated_at = updated_at,
             sequence = sequence
+             */
         )
 
-    private val List<OpenOrderDto>?.toOrderBookList: List<OpenOrder>
+    private val List<OpenOrderResponse>?.toOrderBookList: List<OpenOrder>
         get() = mutableListOf<OpenOrder>()
             .apply {
                 this@toOrderBookList?.forEach {

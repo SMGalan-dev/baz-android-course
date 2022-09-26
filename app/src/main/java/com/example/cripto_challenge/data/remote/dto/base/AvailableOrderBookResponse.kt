@@ -4,7 +4,7 @@ import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class AvailableOrderBookDto (
+data class AvailableOrderBookResponse (
     @SerializedName("book")
     @Expose
     var book: String? = null,

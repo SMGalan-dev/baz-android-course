@@ -7,7 +7,7 @@ import java.io.Serializable
 import java.util.*
 
 
-data class TickerDto(
+data class TickerResponse(
     @SerializedName("book")
     @Expose
     var book: String? = null,
@@ -45,15 +45,17 @@ data class TickerDto(
     fun toTicker(): Ticker =
         Ticker(
             book = book,
-            volume = volume,
             high = high,
             last = last,
             low = low,
+            /*
+            volume = volume,
             vwap = vwap,
             ask = ask,
             bid = bid,
             created_at = created_at,
             change_24 = change_24,
             rolling_average_change = rolling_average_change
+             */
         )
 }

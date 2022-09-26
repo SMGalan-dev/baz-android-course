@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 
-data class OpenOrderDto (
+data class OpenOrderResponse (
     @SerializedName("book")
     @Expose
     var book: String? = null,

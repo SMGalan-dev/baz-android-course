@@ -1,4 +1,4 @@
-package com.example.cripto_challenge.ui.main
+package com.example.cripto_challenge.ui.available_books
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 /**Patron de ineccion de dependencias, la clase sabe que lo necesita pero no lo puede construir.
  * Generamos un mecanismo que nos pueda decir como salvar la instancia dada la dependencia
  */
-class CriptoCurrencyViewModel (private val repository: BitsoServiceRepository) : ViewModel() {
+// class CriptoCurrencyViewModel (private val repository: CurrencyUseCase) : ViewModel() {
+class AvailableBooksViewModel (private val repository: BitsoServiceRepository) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>>()
     private var _selectedOrderBookName = MutableLiveData<String>()
@@ -35,23 +36,27 @@ class CriptoCurrencyViewModel (private val repository: BitsoServiceRepository) :
 
     fun getAvailableBooks(){
         CoroutineScope(Dispatchers.IO).launch {
+            _isLoading.postValue(true)
             val response = repository.getAvaliableBooks()
             if (response.isSuccessful) {
-                _availableOrderBookList.postValue(response.body()?.payload.toMXNAvailableOrderBookList())
+                _availableOrderBookList.postValue(response.body()?.availableBooksListData.toMXNAvailableOrderBookList())
+                _isLoading.postValue(false)
             } else {
                 println("Error")
+                _isLoading.postValue(false)
             }
-
         }
     }
 
     fun getTicker(book: String){
+        _isLoading.postValue(true)
+        cleanTicker()
+        cleanOrderBook()
         CoroutineScope(Dispatchers.IO).launch {
             val response = repository.getTicker(book = book)
-            _isLoading.postValue(true)
 
             if (response.isSuccessful) {
-                _ticker.postValue(response.body()?.payload?.toTicker() ?: Ticker())
+                _ticker.postValue(response.body()?.tickerData?.toTicker() ?: Ticker())
                 getOrderBook(book)
                 //_isLoading.postValue(false)
             } else {
@@ -62,13 +67,21 @@ class CriptoCurrencyViewModel (private val repository: BitsoServiceRepository) :
         }
     }
 
+    private fun cleanOrderBook() {
+        _orderBook.value = OrderBook()
+    }
+
+    private fun cleanTicker() {
+        _ticker.value = Ticker()
+    }
+
     fun getOrderBook(book: String){
         CoroutineScope(Dispatchers.IO).launch {
             val response = repository.getOrderBook(book = book)
 
             if (response.isSuccessful) {
-                println(response.body()?.payload)
-                _orderBook.postValue(response.body()?.payload?.toOrderBook() ?: OrderBook())
+                println(response.body()?.orderBookData)
+                _orderBook.postValue(response.body()?.orderBookData?.toOrderBook() ?: OrderBook())
                 _isLoading.postValue(false)
 
             } else {

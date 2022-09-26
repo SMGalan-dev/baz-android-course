@@ -1,9 +1,10 @@
-package com.example.cripto_challenge.ui.main
+package com.example.cripto_challenge.ui.available_books
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,7 @@ import com.example.cripto_challenge.databinding.AvailableOrderBooksFragmentBindi
 
 class AvailableOrderBooksFragment : Fragment() {
 
-    private val CriptoCurrencyVM by activityViewModels<CriptoCurrencyViewModel>(){ MyViewModelFactoryRep(BitsoServiceRepositoryImp(RetrofitClient.repository())) }
+     private val CriptoCurrencyVM by activityViewModels<AvailableBooksViewModel>(){ MyViewModelFactoryRep(BitsoServiceRepositoryImp(RetrofitClient.repository())) }
     private lateinit var binding: AvailableOrderBooksFragmentBinding
 
     override fun onCreateView(
@@ -29,12 +30,18 @@ class AvailableOrderBooksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        CriptoCurrencyVM.getAvailableBooks()
+        if (CriptoCurrencyVM.availableOrderBookList.value.isNullOrEmpty()) CriptoCurrencyVM.getAvailableBooks()
         binding.apply {
-            CriptoCurrencyVM.availableOrderBookList.observe(viewLifecycleOwner) { productList ->
-                recyclerAvailableBooks.adapter = AvailableBooksAdapter(productList){
-                    CriptoCurrencyVM.setSelectedOrderBook(it?.book ?: "vacio")
-                    findNavController().navigate(R.id.orderBookDetailFragment)
+            CriptoCurrencyVM.isLoading.observe(viewLifecycleOwner){ isLoading ->
+                if (isLoading) progressAvailableOrderBook.visibility = View.VISIBLE
+                else {
+                    recyclerAvailableBooks.adapter = CriptoCurrencyVM.availableOrderBookList.value?.let { list ->
+                        AvailableBooksAdapter(list){
+                            val bundle = bundleOf("book" to it?.book)
+                            findNavController().navigate(R.id.orderBookDetailFragment, bundle)
+                        }
+                    }
+                    progressAvailableOrderBook.visibility = View.GONE
                 }
             }
         }
