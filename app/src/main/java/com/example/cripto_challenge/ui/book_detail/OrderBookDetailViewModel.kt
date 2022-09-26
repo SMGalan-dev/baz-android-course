@@ -1,56 +1,65 @@
 package com.example.cripto_challenge.ui.book_detail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.cripto_challenge.common.RequestState
+import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
 import com.example.cripto_challenge.domain.repository.BitsoServiceRepository
+import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class OrderBookDetailViewModel (private val repository: BitsoServiceRepository) : ViewModel() {
+class OrderBookDetailViewModel (private val currencyUseCase: CurrencyUseCase) : ViewModel() {
 
     private var _ticker = MutableLiveData<Ticker>()
     private var _orderBook = MutableLiveData<OrderBook>()
     private var _isLoading = MutableLiveData<Boolean>(true)
 
     val ticker: LiveData<Ticker> get() = _ticker
-    val OrderBook: LiveData<OrderBook> get() = _orderBook
+    val orderBook: LiveData<OrderBook> get() = _orderBook
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun getTicker(book: String){
-        _isLoading.postValue(true)
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = repository.getTicker(book = book)
-
-            if (response.isSuccessful) {
-                _ticker.postValue(response.body()?.tickerData?.toTicker() ?: Ticker())
-                getOrderBook(book)
-                //_isLoading.postValue(false)
-            } else {
-                println("Error")
-                _isLoading.postValue(false)
+    fun getTicker(book: String, error: (info:String)->Unit) {
+        currencyUseCase.getTicker(book = book).onEach { state ->
+            when(state) {
+                is RequestState.Loading -> _isLoading.value = true
+                is RequestState.Success -> {
+                    _ticker.value = state.data ?: Ticker()
+                    getOrderBook(book) {
+                        error(it)
+                    }
+                }
+                is RequestState.Error -> {
+                    error(state.message ?: "")
+                    getOrderBook(book) {
+                        error(it)
+                    }
+                }
             }
-
-        }
+        }.launchIn(viewModelScope)
     }
 
-    fun getOrderBook(book: String){
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = repository.getOrderBook(book = book)
-
-            if (response.isSuccessful) {
-                println(response.body()?.orderBookData)
-                _orderBook.postValue(response.body()?.orderBookData?.toOrderBook() ?: OrderBook())
-                _isLoading.postValue(false)
-
-            } else {
-                println("Error")
-                _isLoading.postValue(false)
+    private fun getOrderBook(book: String, error: (info:String)->Unit) {
+        currencyUseCase.getOrderBook(book = book).onEach {
+            when(it) {
+                is RequestState.Loading -> _isLoading.value = true
+                is RequestState.Success -> {
+                    _orderBook.value = it.data ?: OrderBook()
+                    _isLoading.value = false
+                }
+                is RequestState.Error -> {
+                    error( "Bids/Asks error: ${it.message}")
+                    _isLoading.value = false
+                }
             }
-
-        }
+        }.launchIn(viewModelScope)
     }
 }
