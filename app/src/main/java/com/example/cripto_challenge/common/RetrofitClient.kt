@@ -1,6 +1,10 @@
 package com.example.cripto_challenge.common
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.cripto_challenge.data.remote.BitsoServiceApi
+import com.example.cripto_challenge.domain.repository.BitsoServiceRepository
+import com.example.cripto_challenge.ui.book_detail.OrderBookDetailViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -25,3 +29,23 @@ object RetrofitClient {
 
     fun repository(): BitsoServiceApi = getRetrofit().create(BitsoServiceApi::class.java)
 }
+
+class MyViewModelFactoryBookDetail(val param: BitsoServiceRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = OrderBookDetailViewModel(param) as T
+}
+
+class MyViewModelFactory<UC>(private val useCaseClass:UC): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        modelClass.getConstructor(useCaseClass!!::class.java)
+            .newInstance(useCaseClass)
+}
+
+/** MANUAL INJECTION
+ * Function with dependences for manual dependences injection
+ *  set to viewmodel with use case constructor
+ *  Usually one Factory for each VM
+
+class MyViewModelFactoryRep(private val useCaseClass:CurrencyUseCase):ViewModelProvider.Factory {
+override fun <T : ViewModel> create(modelClass: Class<T>): T = AvailableBooksViewModel(useCaseClass) as T
+}
+ */

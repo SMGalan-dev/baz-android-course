@@ -5,9 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cripto_challenge.common.utilities.toBookCodeFormat
-import com.example.cripto_challenge.common.utilities.toBookName
-import com.example.cripto_challenge.common.utilities.setLogo
 import com.example.cripto_challenge.databinding.AvailableOrderBookItemBinding
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 
@@ -31,9 +28,9 @@ class AvailableBooksAdapter(
     inner class ViewHolder(private val itemBinding: AvailableOrderBookItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bindItem(item: AvailableOrderBook, context: Context) {
             itemBinding.apply {
-                availableBookCode.text = item.book?.toBookCodeFormat()
-                availableOrderBookName.text = item.book.toBookName()
-                availableOrderBookLogo.setImageDrawable(ContextCompat.getDrawable(context.applicationContext, setLogo(item.book ?: "")))
+                availableBookCode.text = item.book_format_code
+                availableOrderBookName.text = item.book_name
+                availableOrderBookLogo.setImageDrawable(ContextCompat.getDrawable(context.applicationContext, item.book_logo ?: 0))
 
                 itemView.setOnClickListener {
                     clickStore(item)

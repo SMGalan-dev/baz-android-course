@@ -1,36 +1,34 @@
 package com.example.cripto_challenge.domain.use_case
 
+import com.example.cripto_challenge.common.RequestState
+import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
 import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseResponse
+import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.repository.BitsoServiceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 import java.io.IOException
 
-//Aqui va toda la logica de negocio
+//Here goes all the business logic
 class CurrencyUseCase (private val repository: BitsoServiceRepository) {
 
     /*
-    fun getAvailableBooks(book: String): Flow<AvailableBooksBaseResponse?> = flow {
-        try {
-            val response = repository.getTicker(book = book)
-        } catch (e: IOException) {
-
-        }
-    }
-
     //TODO this is a demo for the class
     //suspend fun getAvailableBooks(): AvailableBooksResponse = repository.loadCharacters()
-    //suspend operator fun invoke(): AvailableBooksResponse = repository.loadCharacters() //Para solo una funcion
-
+    //suspend operator fun invoke(): AvailableBooksResponse = repository.loadCharacters() //for one function only
      */
-
-    fun getAvailableBooks(book: String): Flow<AvailableBooksBaseResponse?> = flow {
+    fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>> = flow {
         try {
-            val response = repository.getTicker(book = book)
+            emit(RequestState.Loading<List<AvailableOrderBook>>())
+            val availableBooks: List<AvailableOrderBook> = repository.getAvaliableBooks().let {
+                (it.body() as AvailableBooksBaseResponse).availableBooksListData.toMXNAvailableOrderBookList()
+            }
+            emit(RequestState.Success(availableBooks))
+        } catch (e: HttpException) {
+            emit(RequestState.Error<List<AvailableOrderBook>>(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {
-
+            emit(RequestState.Error<List<AvailableOrderBook>>("Couldn't reach server. Check your internet connection."))
         }
     }
-
-
 }

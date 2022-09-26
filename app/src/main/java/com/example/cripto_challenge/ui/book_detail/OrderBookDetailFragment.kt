@@ -6,15 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.cripto_challenge.MyViewModelFactoryBookDetail
-import com.example.cripto_challenge.MyViewModelFactoryRep
 import com.example.cripto_challenge.R
+import com.example.cripto_challenge.common.MyViewModelFactoryBookDetail
 import com.example.cripto_challenge.common.RetrofitClient
 import com.example.cripto_challenge.common.adapters.OpenOrderAdapter
-import com.example.cripto_challenge.common.utilities.formatAsCurrency
 import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.common.utilities.toBookName
 import com.example.cripto_challenge.data.repository.BitsoServiceRepositoryImp
@@ -23,7 +20,7 @@ import com.example.cripto_challenge.domain.model.OpenOrder
 
 class OrderBookDetailFragment : Fragment() {
 
-    private val OrderBookDetailVM by viewModels<OrderBookDetailViewModel>(){ MyViewModelFactoryBookDetail(BitsoServiceRepositoryImp(RetrofitClient.repository())) }
+    private val orderBookDetailVM by viewModels<OrderBookDetailViewModel>(){ MyViewModelFactoryBookDetail(BitsoServiceRepositoryImp(RetrofitClient.repository())) }
     private lateinit var binding: OrderBookDetailFragmentBinding
 
     override fun onCreateView(
@@ -46,19 +43,19 @@ class OrderBookDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        OrderBookDetailVM.getTicker(arguments?.getString("book") ?: "")
+        orderBookDetailVM.getTicker(arguments?.getString("book") ?: "")
         binding.apply {
-            OrderBookDetailVM.isLoading.observe(viewLifecycleOwner) {
+            orderBookDetailVM.isLoading.observe(viewLifecycleOwner) {
                 if (it) progressDetailOrderBook.visibility = View.VISIBLE
                 else {
-                    orderBookName.text = arguments?.getString("book").toBookName()//CriptoCurrencyVM.selectedOrderBook.value.toBookName()
-                    tvBookCode.text = OrderBookDetailVM.ticker.value?.book.toBookCodeFormat()
-                    bookLastPrice.text = OrderBookDetailVM.ticker.value?.last?.toDouble()?.formatAsCurrency()
-                    bookHighPrice.text = OrderBookDetailVM.ticker.value?.high ?: ""
-                    bookLowPrice.text = OrderBookDetailVM.ticker.value?.low ?: ""
+                    orderBookName.text = arguments?.getString("book").toBookName()
+                    tvBookCode.text = orderBookDetailVM.ticker.value?.book.toBookCodeFormat()
+                    bookLastPrice.text = orderBookDetailVM.ticker.value?.last
+                    bookHighPrice.text = orderBookDetailVM.ticker.value?.high ?: ""
+                    bookLowPrice.text = orderBookDetailVM.ticker.value?.low ?: ""
 
-                    recyclerOrderAsks.adapter = OpenOrderAdapter(OrderBookDetailVM.OrderBook.value?.asks ?: emptyList<OpenOrder>())
-                    recyclerOrderBids.adapter = OpenOrderAdapter(OrderBookDetailVM.OrderBook.value?.bids ?: emptyList<OpenOrder>())
+                    recyclerOrderAsks.adapter = OpenOrderAdapter(orderBookDetailVM.OrderBook.value?.asks ?: emptyList<OpenOrder>())
+                    recyclerOrderBids.adapter = OpenOrderAdapter(orderBookDetailVM.OrderBook.value?.bids ?: emptyList<OpenOrder>())
                     progressDetailOrderBook.visibility = View.GONE
                 }
             }

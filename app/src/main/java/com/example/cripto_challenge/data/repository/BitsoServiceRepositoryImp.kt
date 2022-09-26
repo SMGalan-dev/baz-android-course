@@ -8,8 +8,6 @@ import com.example.cripto_challenge.data.remote.dto.response.TickerBaseResponse
 import com.example.cripto_challenge.domain.repository.BitsoServiceRepository
 import retrofit2.Response
 
-//import javax.inject.Inject
-
 class BitsoServiceRepositoryImp (private val api: BitsoServiceApi)  : BitsoServiceRepository {
 
     private val apiVal = RetrofitClient.repository()
@@ -22,8 +20,4 @@ class BitsoServiceRepositoryImp (private val api: BitsoServiceApi)  : BitsoServi
 
     override suspend fun getTicker(book: String): Response<TickerBaseResponse> =
         api.getTicker(book = book)
-
-    override suspend fun getTickerDirectly(book: String): Any =
-        apiVal.getTickerDirectly(book = book)
-
 }

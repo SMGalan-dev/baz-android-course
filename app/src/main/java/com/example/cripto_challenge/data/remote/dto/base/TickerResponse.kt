@@ -1,5 +1,6 @@
 package com.example.cripto_challenge.data.remote.dto.base
 
+import com.example.cripto_challenge.common.utilities.formatAsCurrency
 import com.example.cripto_challenge.domain.model.Ticker
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -16,13 +17,13 @@ data class TickerResponse(
     var volume: String? = null,
     @SerializedName("high")
     @Expose
-    var high: String? = null,
+    var high: Double? = null,
     @SerializedName("last")
     @Expose
-    var last: String? = null,
+    var last: Double? = null,
     @SerializedName("low")
     @Expose
-    var low: String? = null,
+    var low: Double? = null,
     @SerializedName("vwap")
     @Expose
     var vwap: String? = null,
@@ -45,9 +46,9 @@ data class TickerResponse(
     fun toTicker(): Ticker =
         Ticker(
             book = book,
-            high = high,
-            last = last,
-            low = low,
+            high = high?.formatAsCurrency(),
+            last = last?.formatAsCurrency(),
+            low = low?.formatAsCurrency(),
             /*
             volume = volume,
             vwap = vwap,

@@ -9,5 +9,4 @@ interface BitsoServiceRepository {
     suspend fun getAvaliableBooks(): Response<AvailableBooksBaseResponse>
     suspend fun getOrderBook(book: String): Response<OrderBookBaseResponse>
     suspend fun getTicker(book: String): Response<TickerBaseResponse>
-    suspend fun getTickerDirectly(book: String): Any
 }

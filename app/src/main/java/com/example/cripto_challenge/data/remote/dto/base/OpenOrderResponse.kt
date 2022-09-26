@@ -1,5 +1,6 @@
 package com.example.cripto_challenge.data.remote.dto.base
 
+import com.example.cripto_challenge.common.utilities.formatAsCurrency
 import com.example.cripto_challenge.domain.model.OpenOrder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -18,8 +19,7 @@ data class OpenOrderResponse (
 ){
     fun toOpenOrder(): OpenOrder =
         OpenOrder(
-            book = book,
-            price = price,
-            amount = amount
+            price = price?.formatAsCurrency(),
+            amount = amount?.formatAsCurrency()
         )
 }

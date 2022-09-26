@@ -24,11 +24,7 @@ data class OrderBookResponse (
     fun toOrderBook(): OrderBook =
         OrderBook(
             asks = asks.toOrderBookList,
-            bids = bids.toOrderBookList,
-            /*
-            updated_at = updated_at,
-            sequence = sequence
-             */
+            bids = bids.toOrderBookList
         )
 
     private val List<OpenOrderResponse>?.toOrderBookList: List<OpenOrder>
