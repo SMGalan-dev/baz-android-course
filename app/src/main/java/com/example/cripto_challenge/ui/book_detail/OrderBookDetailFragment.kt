@@ -4,26 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.cripto_challenge.MainActivity
 import com.example.cripto_challenge.R
 import com.example.cripto_challenge.common.MyViewModelFactory
 import com.example.cripto_challenge.common.RetrofitClient
-import com.example.cripto_challenge.common.adapters.OpenOrderAdapter
+import com.example.cripto_challenge.common.adapters.OpenOrderListAdapter
 import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.common.utilities.toBookName
 import com.example.cripto_challenge.data.repository.BitsoServiceRepositoryImp
 import com.example.cripto_challenge.databinding.OrderBookDetailFragmentBinding
-import com.example.cripto_challenge.domain.model.OpenOrder
 import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
 
 class OrderBookDetailFragment : Fragment() {
 
     private val orderBookDetailVM by viewModels<OrderBookDetailViewModel>(){ MyViewModelFactory(CurrencyUseCase(BitsoServiceRepositoryImp(RetrofitClient.repository()))) }
     private lateinit var binding: OrderBookDetailFragmentBinding
+
+    private val bidsListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
+    private val askListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +39,7 @@ class OrderBookDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                (activity as MainActivity).closeErrorMessage()
                 findNavController().navigate(R.id.availableOrderBooksFragment)
             }
         }
@@ -46,7 +49,9 @@ class OrderBookDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         orderBookDetailVM.getTicker(arguments?.getString("book") ?: "",
-            error ={ Toast.makeText(context, it, Toast.LENGTH_SHORT).show()}
+            error ={
+                (activity as MainActivity).noNetworkConnection(it)
+            }
         )
         binding.apply {
             orderBookDetailVM.isLoading.observe(viewLifecycleOwner) {
@@ -58,8 +63,13 @@ class OrderBookDetailFragment : Fragment() {
                     bookHighPrice.text = orderBookDetailVM.ticker.value?.high
                     bookLowPrice.text = orderBookDetailVM.ticker.value?.low
 
-                    recyclerOrderAsks.adapter = OpenOrderAdapter(orderBookDetailVM.orderBook.value?.asks ?: emptyList<OpenOrder>())
-                    recyclerOrderBids.adapter = OpenOrderAdapter(orderBookDetailVM.orderBook.value?.bids ?: emptyList<OpenOrder>())
+                    recyclerOrderAsks.adapter = askListAdapter.also { askAdapter ->
+                        askAdapter.submitList(orderBookDetailVM.orderBook.value?.asks)
+                    }
+
+                    recyclerOrderBids.adapter = bidsListAdapter.also { bidsAdapter ->
+                        bidsAdapter.submitList(orderBookDetailVM.orderBook.value?.bids)
+                    }
                     progressDetailOrderBook.visibility = View.GONE
                 }
             }

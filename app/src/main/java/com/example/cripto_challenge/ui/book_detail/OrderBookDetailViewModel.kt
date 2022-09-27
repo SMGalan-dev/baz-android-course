@@ -1,21 +1,15 @@
 package com.example.cripto_challenge.ui.book_detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cripto_challenge.common.RequestState
-import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
-import com.example.cripto_challenge.domain.repository.BitsoServiceRepository
 import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class OrderBookDetailViewModel (private val currencyUseCase: CurrencyUseCase) : ViewModel() {
 
@@ -40,7 +34,7 @@ class OrderBookDetailViewModel (private val currencyUseCase: CurrencyUseCase) : 
                 is RequestState.Error -> {
                     error(state.message ?: "")
                     getOrderBook(book) {
-                        error(it)
+                        error( "Ticker error: ${state.message}" + "\n" + it)
                     }
                 }
             }
