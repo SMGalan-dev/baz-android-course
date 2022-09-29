@@ -16,8 +16,5 @@
         android:id="@+id/orderBookDetailFragment"
         android:name="com.example.cripto_challenge.ui.book_detail.OrderBookDetailFragment"
         android:label="OrderBookDetailFragment" >
-        <action
-            android:id="@+id/action_orderBookDetailFragment_to_availableOrderBooksFragment"
-            app:destination="@id/availableOrderBooksFragment" />
     </fragment>
 </navigation>

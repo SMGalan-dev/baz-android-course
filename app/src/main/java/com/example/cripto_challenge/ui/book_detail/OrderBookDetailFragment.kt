@@ -27,6 +27,7 @@ class OrderBookDetailFragment : Fragment() {
     }
     private lateinit var binding: OrderBookDetailFragmentBinding
 
+    private lateinit var bookCode: String
     private val bidsListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
     private val askListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
 
@@ -38,20 +39,10 @@ class OrderBookDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                (activity as MainActivity).closeErrorMessage()
-                findNavController().navigate(R.id.availableOrderBooksFragment)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        orderBookDetailVM.getTicker(arguments?.getString("book") ?: "",
+        bookCode = arguments?.getString(getString(R.string.book_code)).orEmpty()
+        orderBookDetailVM.getTicker(bookCode,
             error ={
                 (activity as MainActivity).noNetworkConnection(it)
             }
@@ -61,7 +52,7 @@ class OrderBookDetailFragment : Fragment() {
             orderBookDetailVM.isLoading.observe(viewLifecycleOwner) {
                 if (it) progressDetailOrderBook.visibility = View.VISIBLE
                 else {
-                    orderBookName.text = arguments?.getString("book").toBookName()
+                    orderBookName.text = bookCode.toBookName()
                     tvBookCode.text = orderBookDetailVM.ticker.value?.book.toBookCodeFormat()
                     bookLastPrice.text = orderBookDetailVM.ticker.value?.last
                     bookHighPrice.text = orderBookDetailVM.ticker.value?.high

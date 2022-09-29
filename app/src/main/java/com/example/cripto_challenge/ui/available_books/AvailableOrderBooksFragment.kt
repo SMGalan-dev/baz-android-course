@@ -27,7 +27,7 @@ class AvailableOrderBooksFragment : Fragment() {
 
     private val availableBooksAdapterList: AvailableBooksListAdapter by lazy {
         AvailableBooksListAdapter {
-            val bundle = bundleOf("book" to it?.book_code)
+            val bundle = bundleOf(getString(R.string.book_code) to it?.book_code)
             findNavController().navigate(R.id.orderBookDetailFragment, bundle)
         }
     }

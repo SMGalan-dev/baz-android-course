@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onEach
 class AvailableBooksViewModel (private val currencyUseCase: CurrencyUseCase) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>>()
-    private var _isLoading = MutableLiveData<Boolean>(true)
+    private var _isLoading = MutableLiveData(true)
 
     val availableOrderBookList: LiveData<List<AvailableOrderBook>> get() = _availableOrderBookList
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -23,13 +23,13 @@ class AvailableBooksViewModel (private val currencyUseCase: CurrencyUseCase) : V
             when(state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
-                    _availableOrderBookList.value = state.data ?: emptyList()
+                    _availableOrderBookList.value = state.data.orEmpty()
                     _isLoading.value = false
                 }
                 is RequestState.Error -> {
-                    error(state.message ?: "")
+                    error(state.message.orEmpty())
                     if (!state.data.isNullOrEmpty())
-                        _availableOrderBookList.value = state.data ?: emptyList()
+                        _availableOrderBookList.value = state.data.orEmpty()
                     _isLoading.value = false
                 }
             }

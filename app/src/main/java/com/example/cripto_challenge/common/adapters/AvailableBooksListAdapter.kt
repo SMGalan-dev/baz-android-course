@@ -31,20 +31,17 @@ class AvailableBooksListAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val context: Context = viewHolder.itemView.context
-        viewHolder.bindItem(getItem(position), context){
-            itemClick(it)
-        }
+        viewHolder.bindItem(getItem(position))
     }
 
-    class ViewHolder(private val itemBinding: AvailableOrderBookItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindItem (item: AvailableOrderBook, context: Context, itemClickAux: (AvailableOrderBook?) -> Unit){
+    inner class ViewHolder(private val itemBinding: AvailableOrderBookItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+        fun bindItem (item: AvailableOrderBook){
             itemBinding.apply {
                 availableBookCode.text = item.book_format_code
                 availableOrderBookName.text = item.book_name
-                availableOrderBookLogo.setImageDrawable(ContextCompat.getDrawable(context.applicationContext, item.book_logo ?: 0))
+                availableOrderBookLogo.setImageDrawable(ContextCompat.getDrawable(itemBinding.root.context, item.book_logo ?: 0))
                 itemView.setOnClickListener {
-                    itemClickAux(item)
+                    itemClick(item)
                 }
             }
         }
