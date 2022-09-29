@@ -10,9 +10,6 @@ import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-/**Dependency injection pattern, the class knows it needs it but cannot build it.
- * We generate a mechanism that can tell us how to save the instance given the dependency
- */
 class AvailableBooksViewModel (private val currencyUseCase: CurrencyUseCase) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>>()
@@ -22,15 +19,17 @@ class AvailableBooksViewModel (private val currencyUseCase: CurrencyUseCase) : V
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun getAvailableBooks(error: (info:String)->Unit) {
-        currencyUseCase.getAvailableBooks().onEach {
-            when(it) {
+        currencyUseCase.getAvailableBooks().onEach { state ->
+            when(state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
-                    _availableOrderBookList.value = it.data ?: emptyList()
+                    _availableOrderBookList.value = state.data ?: emptyList()
                     _isLoading.value = false
                 }
                 is RequestState.Error -> {
-                    error(it.message ?: "")
+                    error(state.message ?: "")
+                    if (!state.data.isNullOrEmpty())
+                        _availableOrderBookList.value = state.data ?: emptyList()
                     _isLoading.value = false
                 }
             }

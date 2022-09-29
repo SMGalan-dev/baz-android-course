@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.cripto_challenge.data.remote.BitsoServiceApi
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,9 +13,7 @@ object RetrofitClient {
 
     private const val BASE_URL = "https://api.bitso.com/v3/"
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().also { it.setLevel(HttpLoggingInterceptor.Level.BODY) })
-        .build()
+    fun repository(): BitsoServiceApi = getRetrofit().create(BitsoServiceApi::class.java)
 
     private fun getRetrofit(): Retrofit =
         Retrofit.Builder()
@@ -23,7 +22,22 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-    fun repository(): BitsoServiceApi = getRetrofit().create(BitsoServiceApi::class.java)
+    private val okHttpClient: OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val client: OkHttpClient = OkHttpClient.Builder()
+                    .addNetworkInterceptor(HttpLoggingInterceptor().also {
+                        it.setLevel(HttpLoggingInterceptor.Level.BODY)
+                    }
+                    ).build()
+                val original = chain.request()
+                val request: Request = original.newBuilder()
+                    .header("User-Agent", original.url.host)
+                    .method(original.method, original.body)
+                    .build()
+                client.newCall(request).execute()
+            }.build()
+
 }
 
 class MyViewModelFactory<UC>(private val useCaseClass:UC): ViewModelProvider.Factory {
@@ -31,18 +45,3 @@ class MyViewModelFactory<UC>(private val useCaseClass:UC): ViewModelProvider.Fac
         modelClass.getConstructor(useCaseClass!!::class.java)
             .newInstance(useCaseClass)
 }
-
-/** MANUAL INJECTION
- * Function with dependences for manual dependences injection
- *  set to viewmodel with use case constructor
-
-class MyViewModelFactoryRep(private val useCaseClass:CurrencyUseCase):ViewModelProvider.Factory {
-override fun <T : ViewModel> create(modelClass: Class<T>): T = AvailableBooksViewModel(useCaseClass) as T
-}
-
-
- *  Usually one Factory for each VM
-class MyViewModelFactoryBookDetail(val param: BitsoServiceRepository) : ViewModelProvider.Factory {
-override fun <T : ViewModel> create(modelClass: Class<T>): T = OrderBookDetailViewModel(param) as T
-}
- */

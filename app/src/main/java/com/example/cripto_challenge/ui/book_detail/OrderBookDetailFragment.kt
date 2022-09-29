@@ -15,13 +15,16 @@ import com.example.cripto_challenge.common.RetrofitClient
 import com.example.cripto_challenge.common.adapters.OpenOrderListAdapter
 import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.common.utilities.toBookName
+import com.example.cripto_challenge.config.InitApplication.Companion.criptoCurrencyDB
 import com.example.cripto_challenge.data.repository.BitsoServiceRepositoryImp
 import com.example.cripto_challenge.databinding.OrderBookDetailFragmentBinding
 import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
 
 class OrderBookDetailFragment : Fragment() {
 
-    private val orderBookDetailVM by viewModels<OrderBookDetailViewModel>(){ MyViewModelFactory(CurrencyUseCase(BitsoServiceRepositoryImp(RetrofitClient.repository()))) }
+    private val orderBookDetailVM by viewModels<OrderBookDetailViewModel>(){
+        MyViewModelFactory(CurrencyUseCase(BitsoServiceRepositoryImp(RetrofitClient.repository(), criptoCurrencyDB.getCriptoCurrencyDao())))
+    }
     private lateinit var binding: OrderBookDetailFragmentBinding
 
     private val bidsListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
@@ -53,11 +56,12 @@ class OrderBookDetailFragment : Fragment() {
                 (activity as MainActivity).noNetworkConnection(it)
             }
         )
+
         binding.apply {
             orderBookDetailVM.isLoading.observe(viewLifecycleOwner) {
                 if (it) progressDetailOrderBook.visibility = View.VISIBLE
                 else {
-                    orderBookName.text = orderBookDetailVM.ticker.value?.book.toBookName()
+                    orderBookName.text = arguments?.getString("book").toBookName()
                     tvBookCode.text = orderBookDetailVM.ticker.value?.book.toBookCodeFormat()
                     bookLastPrice.text = orderBookDetailVM.ticker.value?.last
                     bookHighPrice.text = orderBookDetailVM.ticker.value?.high

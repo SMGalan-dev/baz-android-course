@@ -1,27 +1,28 @@
 package com.example.cripto_challenge.domain.use_case
 
+import android.util.Log
 import com.example.cripto_challenge.common.RequestState
+import com.example.cripto_challenge.common.utilities.toAvailableOrderBookEntityList
+import com.example.cripto_challenge.common.utilities.toAvailableOrderBookListFromEntity
 import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
+import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
 import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseResponse
 import com.example.cripto_challenge.data.remote.dto.response.OrderBookBaseResponse
 import com.example.cripto_challenge.data.remote.dto.response.TickerBaseResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
-import com.example.cripto_challenge.domain.repository.BitsoServiceRepository
+import com.example.cripto_challenge.data.repository.BitsoServiceRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import retrofit2.Response
 import java.io.IOException
 
-//Here goes all the business logic
 class CurrencyUseCase (private val repository: BitsoServiceRepository) {
-
-    //TODO this is a demo for the class
-    //suspend fun getAvailableBooks(): AvailableBooksResponse = repository.loadCharacters()
-    //suspend operator fun invoke(): AvailableBooksResponse = repository.loadCharacters() //for one function only
 
     fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>> = flow {
         try {
@@ -29,11 +30,14 @@ class CurrencyUseCase (private val repository: BitsoServiceRepository) {
             val availableBooks: List<AvailableOrderBook> = repository.getAvaliableBooks().let {
                 (it.body() as AvailableBooksBaseResponse).availableBooksListData.toMXNAvailableOrderBookList()
             }
+            updateAvailableBooksDB(availableBooks.toAvailableOrderBookEntityList())
             emit(RequestState.Success(availableBooks))
         } catch (e: HttpException) {
             emit(RequestState.Error<List<AvailableOrderBook>>(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {
-            emit(RequestState.Error<List<AvailableOrderBook>>("Couldn't reach server. Check your internet connection."))
+            val dataFromDB = repository.getAllCriptoCurrencyFromDatabase().let { it.toAvailableOrderBookListFromEntity()}
+            if (dataFromDB.isNullOrEmpty()) emit(RequestState.Error<List<AvailableOrderBook>>("Couldn't reach server. Check your internet connection. \nNo stored data"))
+            else emit(RequestState.Error<List<AvailableOrderBook>>("Couldn't reach server. Check your internet connection. \nShowing stored data", dataFromDB))
         }
     }
 
@@ -53,7 +57,7 @@ class CurrencyUseCase (private val repository: BitsoServiceRepository) {
         } catch (e: HttpException) {
             emit(RequestState.Error<Ticker>(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {
-            emit(RequestState.Error<Ticker>("Couldn't reach server. Check your internet connection."))
+            emit(RequestState.Error<Ticker>("Couldn't reach server."))
         }
     }
 
@@ -76,4 +80,19 @@ class CurrencyUseCase (private val repository: BitsoServiceRepository) {
             emit(RequestState.Error<OrderBook>("Couldn't reach server. Check your internet connection."))
         }
     }
+
+    private fun updateAvailableBooksDB(bookList: List<AvailableOrderBookEntity>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.getAllCriptoCurrencyFromDatabase().run {
+                if (this.isNullOrEmpty()){
+                    Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity inserted")
+                    repository.insertCriptoCurrencyToDatabase(bookList)
+                } else{
+                    Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity updated")
+                    repository.updateCriptoCurrencyToDatabase(bookList)
+                }
+            }
+        }
+    }
+
 }
