@@ -6,13 +6,12 @@ import com.example.cripto_challenge.data.remote.dto.response.OrderBookBaseRespon
 import com.example.cripto_challenge.data.remote.dto.response.TickerBaseResponse
 import retrofit2.Response
 
-interface BitsoServiceRepository {
-    suspend fun getAvaliableBooks(): Response<AvailableBooksBaseResponse>
+interface CryptoCurrencyRepository {
+    suspend fun getAvailableBooks(): Response<AvailableBooksBaseResponse>
     suspend fun getOrderBook(book: String): Response<OrderBookBaseResponse>
     suspend fun getTicker(book: String): Response<TickerBaseResponse>
+    suspend fun insertCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
+    suspend fun getAllCryptoCurrencyFromDatabase(): List<AvailableOrderBookEntity>
+    suspend fun updateCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
 
-    // DataBase
-    suspend fun insertCriptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
-    suspend fun getAllCriptoCurrencyFromDatabase(): List<AvailableOrderBookEntity>
-    suspend fun updateCriptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
 }

@@ -1,13 +1,9 @@
 package com.example.cripto_challenge.domain.use_case
 
-import com.example.cripto_challenge.MainActivity
 import com.example.cripto_challenge.R
-import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
-import com.example.cripto_challenge.data.remote.BitsoServiceApi
 import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookResponse
 import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseResponse
-import com.example.cripto_challenge.data.repository.BitsoServiceRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

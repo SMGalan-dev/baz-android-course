@@ -7,16 +7,16 @@ import androidx.room.Update
 import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
 
 @Dao
-interface CriptoCurrencyDao {
+interface CryptoCurrencyDao {
 
     @Query("SELECT * FROM available_order_book")
-    fun getAllCriptoCurrencyFromDatabase(): List<AvailableOrderBookEntity>
+    fun getAllCryptoCurrencyFromDatabase(): List<AvailableOrderBookEntity>
 
     @Insert
-    fun insertCriptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
+    fun insertCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
 
     @Update
-    fun updateCriptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
+    fun updateCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
 
     @Query("DELETE FROM available_order_book")
     fun deleteCriptoCurrencyFromDatabase()

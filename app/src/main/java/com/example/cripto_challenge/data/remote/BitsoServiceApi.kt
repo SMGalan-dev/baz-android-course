@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface BitsoServiceApi {
 
     @GET("available_books")
-    suspend fun getAvaliableBooks(): Response<AvailableBooksBaseResponse>
+    suspend fun getAvailableBooks(): Response<AvailableBooksBaseResponse>
 
     @GET("order_book/")
     suspend fun getOrderBook(

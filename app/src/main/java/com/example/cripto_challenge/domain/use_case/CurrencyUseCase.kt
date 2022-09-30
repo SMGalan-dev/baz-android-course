@@ -9,7 +9,7 @@ import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEnt
 import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseResponse
 import com.example.cripto_challenge.data.remote.dto.response.OrderBookBaseResponse
 import com.example.cripto_challenge.data.remote.dto.response.TickerBaseResponse
-import com.example.cripto_challenge.data.repository.BitsoServiceRepository
+import com.example.cripto_challenge.data.repository.CryptoCurrencyRepository
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
@@ -22,12 +22,12 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-class CurrencyUseCase (private val repository: BitsoServiceRepository) {
+class CurrencyUseCase (private val repository: CryptoCurrencyRepository) {
 
     fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>> = flow {
         try {
             emit(RequestState.Loading())
-            val availableBooks: List<AvailableOrderBook> = repository.getAvaliableBooks().let {
+            val availableBooks: List<AvailableOrderBook> = repository.getAvailableBooks().let {
                 (it.body() as AvailableBooksBaseResponse).availableBooksListData.toMXNAvailableOrderBookList()
             }
             updateAvailableBooksDB(availableBooks.toAvailableOrderBookEntityList())
@@ -35,7 +35,7 @@ class CurrencyUseCase (private val repository: BitsoServiceRepository) {
         } catch (e: HttpException) {
             emit(RequestState.Error(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {
-            val dataFromDB = repository.getAllCriptoCurrencyFromDatabase().let { it.toAvailableOrderBookListFromEntity()}
+            val dataFromDB = repository.getAllCryptoCurrencyFromDatabase().let { it.toAvailableOrderBookListFromEntity()}
             if (dataFromDB.isNullOrEmpty()) emit(RequestState.Error("Couldn't reach server. Check your internet connection. \nNo stored data"))
             else emit(RequestState.Error("Couldn't reach server. Check your internet connection. \nShowing stored data", dataFromDB))
         }
@@ -84,13 +84,13 @@ class CurrencyUseCase (private val repository: BitsoServiceRepository) {
 
     fun updateAvailableBooksDB(bookList: List<AvailableOrderBookEntity>) {
         CoroutineScope(Dispatchers.IO).launch {
-            repository.getAllCriptoCurrencyFromDatabase().run {
+            repository.getAllCryptoCurrencyFromDatabase().run {
                 if (this.isNullOrEmpty()){
                     Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity inserted")
-                    repository.insertCriptoCurrencyToDatabase(bookList)
+                    repository.insertCryptoCurrencyToDatabase(bookList)
                 } else{
                     Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity updated")
-                    repository.updateCriptoCurrencyToDatabase(bookList)
+                    repository.updateCryptoCurrencyToDatabase(bookList)
                 }
             }
         }
