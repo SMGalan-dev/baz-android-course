@@ -6,32 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.cripto_challenge.MainActivity
 import com.example.cripto_challenge.R
-import com.example.cripto_challenge.common.MyViewModelFactory
-import com.example.cripto_challenge.common.RetrofitClient
 import com.example.cripto_challenge.common.adapters.AvailableBooksListAdapter
-import com.example.cripto_challenge.config.InitApplication.Companion.criptoCurrencyDB
-import com.example.cripto_challenge.data.database.data_source.CryptoCurrencyLocalDataSource
-import com.example.cripto_challenge.data.remote.data_source.CryptoCurrencyNetworkDataSource
-import com.example.cripto_challenge.data.repository.CryptoCurrencyRepositoryImp
 import com.example.cripto_challenge.databinding.AvailableOrderBooksFragmentBinding
-import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
 
 class AvailableOrderBooksFragment : Fragment() {
 
-    private val criptoCurrencyVM by viewModels<AvailableBooksViewModel>(){
-        MyViewModelFactory(
-            GetAvailableBooksUseCase(
-                CryptoCurrencyRepositoryImp(
-                    CryptoCurrencyNetworkDataSource(RetrofitClient.repository()),
-                    CryptoCurrencyLocalDataSource(criptoCurrencyDB.getCriptoCurrencyDao())
-                )
-            )
-        )
-    }
+    private val criptoCurrencyVM by activityViewModels<AvailableBooksViewModel>()
     private lateinit var binding: AvailableOrderBooksFragmentBinding
 
     private val availableBooksAdapterList: AvailableBooksListAdapter by lazy {

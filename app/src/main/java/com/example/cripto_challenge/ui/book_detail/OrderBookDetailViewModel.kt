@@ -8,10 +8,13 @@ import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
 import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class OrderBookDetailViewModel (private val currencyUseCase: CurrencyUseCase) : ViewModel() {
+@HiltViewModel
+class OrderBookDetailViewModel @Inject constructor(private val currencyUseCase: CurrencyUseCase) : ViewModel() {
 
     private var _ticker = MutableLiveData<Ticker>()
     private var _orderBook = MutableLiveData<OrderBook>()

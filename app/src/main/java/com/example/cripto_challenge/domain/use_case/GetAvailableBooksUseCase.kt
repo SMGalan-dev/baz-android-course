@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class GetAvailableBooksUseCase(private val repository: CryptoCurrencyRepository) {
+class GetAvailableBooksUseCase @Inject constructor(private val repository: CryptoCurrencyRepository) {
 
     private fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>> = flow {
         try {

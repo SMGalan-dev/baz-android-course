@@ -5,33 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.example.cripto_challenge.MainActivity
 import com.example.cripto_challenge.R
-import com.example.cripto_challenge.common.MyViewModelFactory
-import com.example.cripto_challenge.common.RetrofitClient
 import com.example.cripto_challenge.common.adapters.OpenOrderListAdapter
 import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.common.utilities.toBookName
-import com.example.cripto_challenge.config.InitApplication.Companion.criptoCurrencyDB
-import com.example.cripto_challenge.data.database.data_source.CryptoCurrencyLocalDataSource
-import com.example.cripto_challenge.data.remote.data_source.CryptoCurrencyNetworkDataSource
-import com.example.cripto_challenge.data.repository.CryptoCurrencyRepositoryImp
 import com.example.cripto_challenge.databinding.OrderBookDetailFragmentBinding
-import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
 
 class OrderBookDetailFragment : Fragment() {
 
-    private val orderBookDetailVM by viewModels<OrderBookDetailViewModel>(){
-        MyViewModelFactory(
-            CurrencyUseCase(
-                CryptoCurrencyRepositoryImp(
-                    CryptoCurrencyNetworkDataSource(RetrofitClient.repository()),
-                    CryptoCurrencyLocalDataSource(criptoCurrencyDB.getCriptoCurrencyDao())
-                )
-            )
-        )
-    }
+    private val orderBookDetailVM by activityViewModels<OrderBookDetailViewModel>()
     private lateinit var binding: OrderBookDetailFragmentBinding
 
     private lateinit var bookCode: String

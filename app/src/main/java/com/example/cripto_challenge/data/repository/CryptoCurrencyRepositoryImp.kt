@@ -9,8 +9,9 @@ import com.example.cripto_challenge.data.remote.dto.response.OrderBookBaseRespon
 import com.example.cripto_challenge.data.remote.dto.response.TickerBaseResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import retrofit2.Response
+import javax.inject.Inject
 
-class CryptoCurrencyRepositoryImp(
+class CryptoCurrencyRepositoryImp @Inject constructor(
     private val remoteDataSource: CryptoCurrencyNetworkDataSource,
     private val localDataSource: CryptoCurrencyLocalDataSource,
 ): CryptoCurrencyRepository{

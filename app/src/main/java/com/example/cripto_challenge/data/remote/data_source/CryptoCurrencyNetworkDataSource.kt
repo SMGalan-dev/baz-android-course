@@ -5,8 +5,9 @@ import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseR
 import com.example.cripto_challenge.data.remote.dto.response.OrderBookBaseResponse
 import com.example.cripto_challenge.data.remote.dto.response.TickerBaseResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class CryptoCurrencyNetworkDataSource (
+class CryptoCurrencyNetworkDataSource @Inject constructor(
     private val api: BitsoServiceApi
 ){
     suspend fun getAvailableBooks(): Response<AvailableBooksBaseResponse> =

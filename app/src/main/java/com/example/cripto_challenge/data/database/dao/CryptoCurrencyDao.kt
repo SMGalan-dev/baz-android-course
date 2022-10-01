@@ -9,7 +9,7 @@ import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEnt
 @Dao
 interface CryptoCurrencyDao {
 
-    @Query("SELECT * FROM available_order_book")
+    @Query("SELECT * FROM available_order_book_table")
     fun getAllCryptoCurrencyFromDatabase(): List<AvailableOrderBookEntity>
 
     @Insert
@@ -18,6 +18,6 @@ interface CryptoCurrencyDao {
     @Update
     fun updateCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>)
 
-    @Query("DELETE FROM available_order_book")
+    @Query("DELETE FROM available_order_book_table")
     fun deleteCriptoCurrencyFromDatabase()
 }

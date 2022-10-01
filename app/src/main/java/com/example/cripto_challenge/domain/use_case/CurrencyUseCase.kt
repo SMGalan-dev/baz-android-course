@@ -16,8 +16,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class CurrencyUseCase (private val repository: CryptoCurrencyRepository) {
+class CurrencyUseCase @Inject constructor(private val repository: CryptoCurrencyRepository) {
 
     fun getTicker(book: String): Flow<RequestState<Ticker>> = flow {
         try {

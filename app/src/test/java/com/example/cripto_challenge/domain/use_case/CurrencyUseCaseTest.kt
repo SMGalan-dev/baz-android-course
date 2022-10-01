@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class CurrencyUseCaseTest {
 
-
+/*
     lateinit var systemUnderTest: CurrencyUseCase
     val repository: BitsoServiceRepository = mockk()
 
@@ -70,4 +70,6 @@ class CurrencyUseCaseTest {
             systemUnderTest.updateAvailableBooksDB(listEnt)
         }
     }
+
+ */
 }

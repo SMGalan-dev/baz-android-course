@@ -7,10 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class AvailableBooksViewModel (private val currencyUseCase: GetAvailableBooksUseCase) : ViewModel() {
+@HiltViewModel
+class AvailableBooksViewModel @Inject constructor(private val currencyUseCase: GetAvailableBooksUseCase) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>>()
     private var _isLoading = MutableLiveData(true)

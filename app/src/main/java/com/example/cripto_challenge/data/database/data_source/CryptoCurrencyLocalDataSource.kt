@@ -2,8 +2,9 @@ package com.example.cripto_challenge.data.database.data_source
 
 import com.example.cripto_challenge.data.database.dao.CryptoCurrencyDao
 import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
+import javax.inject.Inject
 
-class CryptoCurrencyLocalDataSource (
+class CryptoCurrencyLocalDataSource @Inject constructor(
     private val localDB: CryptoCurrencyDao
 ) {
 
