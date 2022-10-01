@@ -18,13 +18,13 @@ import com.example.cripto_challenge.data.database.data_source.CryptoCurrencyLoca
 import com.example.cripto_challenge.data.remote.data_source.CryptoCurrencyNetworkDataSource
 import com.example.cripto_challenge.data.repository.CryptoCurrencyRepositoryImp
 import com.example.cripto_challenge.databinding.AvailableOrderBooksFragmentBinding
-import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
+import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
 
 class AvailableOrderBooksFragment : Fragment() {
 
     private val criptoCurrencyVM by viewModels<AvailableBooksViewModel>(){
         MyViewModelFactory(
-            CurrencyUseCase(
+            GetAvailableBooksUseCase(
                 CryptoCurrencyRepositoryImp(
                     CryptoCurrencyNetworkDataSource(RetrofitClient.repository()),
                     CryptoCurrencyLocalDataSource(criptoCurrencyDB.getCriptoCurrencyDao())

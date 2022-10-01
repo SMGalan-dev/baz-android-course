@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
-import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
+import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class AvailableBooksViewModel (private val currencyUseCase: CurrencyUseCase) : ViewModel() {
+class AvailableBooksViewModel (private val currencyUseCase: GetAvailableBooksUseCase) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>>()
     private var _isLoading = MutableLiveData(true)
@@ -19,7 +19,7 @@ class AvailableBooksViewModel (private val currencyUseCase: CurrencyUseCase) : V
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun getAvailableBooks(error: (info:String)->Unit) {
-        currencyUseCase.getAvailableBooks().onEach { state ->
+        currencyUseCase.invoke().onEach { state ->
             when(state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
