@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Capstone Project</string>
     <string name="book_code">book</string>
+    <string name="no_data_internet_error">Couldn\'t reach server. Check your internet connection. \nNo stored data</string>
+    <string name="data_internet_error">Couldn\'t reach server. Check your internet connection. \nShowing stored data</string>
+    <string name="http_unexpected_error">An unexpected error occurred</string>
+    <string name="interrupted_internet_error">Your connection was interrupted</string>
 </resources>

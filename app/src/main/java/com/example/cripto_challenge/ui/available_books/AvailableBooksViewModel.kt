@@ -31,8 +31,7 @@ class AvailableBooksViewModel @Inject constructor(private val currencyUseCase: G
                 }
                 is RequestState.Error -> {
                     error(state.message.orEmpty())
-                    if (!state.data.isNullOrEmpty())
-                        _availableOrderBookList.value = state.data.orEmpty()
+                    _availableOrderBookList.value = emptyList()
                     _isLoading.value = false
                 }
             }

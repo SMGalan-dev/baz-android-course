@@ -1,6 +1,5 @@
 package com.example.cripto_challenge.domain.use_case
 
-import android.util.Log
 import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
 import com.example.cripto_challenge.data.remote.dto.response.OrderBookBaseResponse
@@ -9,11 +8,8 @@ import com.example.cripto_challenge.data.repository.CryptoCurrencyRepository
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -57,21 +53,6 @@ class CurrencyUseCase @Inject constructor(private val repository: CryptoCurrency
             emit(RequestState.Error(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {
             emit(RequestState.Error("Couldn't reach server. Check your internet connection."))
-        }
-    }
-
-
-    fun updateAvailableBooksDB(bookList: List<AvailableOrderBookEntity>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.getAllCryptoCurrencyFromDatabase().run {
-                if (this.isNullOrEmpty()){
-                    Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity inserted")
-                    repository.insertCryptoCurrencyToDatabase(bookList)
-                } else{
-                    Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity updated")
-                    repository.updateCryptoCurrencyToDatabase(bookList)
-                }
-            }
         }
     }
 
