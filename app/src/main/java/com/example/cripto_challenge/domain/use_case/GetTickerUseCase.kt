@@ -22,7 +22,7 @@ class GetTickerUseCase @Inject constructor(
             emit(RequestState.Loading())
             repository.getTicker(book)?.let {
                 emit(RequestState.Success(it))
-            } ?: run { emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.no_data_internet_error)))}
+            } ?: run { emit(RequestState.Error(context.getString(R.string.no_data_internet_error)))}
         } catch (e: HttpException) {
             emit(RequestState.Error(context.getString(R.string.ticker_error) + e.localizedMessage))
         } catch (e: IOException) {

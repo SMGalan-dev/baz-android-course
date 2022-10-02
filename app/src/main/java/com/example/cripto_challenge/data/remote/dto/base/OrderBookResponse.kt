@@ -21,8 +21,9 @@ data class OrderBookResponse (
     @Expose
     var sequence: String? = null
 ){
-    fun toOrderBook(): OrderBook =
+    fun toOrderBook(book: String): OrderBook =
         OrderBook(
+            book = book,
             asks = asks.toOrderBookList,
             bids = bids.toOrderBookList
         )

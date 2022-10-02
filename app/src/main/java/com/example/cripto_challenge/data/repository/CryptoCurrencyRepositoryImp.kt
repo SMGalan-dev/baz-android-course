@@ -30,11 +30,11 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     localDataSource.getAllAvailableOrderBookFromDatabase().run {
                         if (this.isNullOrEmpty()) {
-                            Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity inserted")
                             localDataSource.insertAvailableOrderBookToDatabase(bookList.toAvailableOrderBookEntityList())
+                            Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity inserted")
                         } else {
-                            Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity updated")
                             localDataSource.updateAvailableOrderBookDatabase(bookList.toAvailableOrderBookEntityList())
+                            Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity updated")
                         }
                     }
                 }
@@ -51,9 +51,8 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
             }?.also { ticker ->
                 CoroutineScope(Dispatchers.IO).launch {
                     localDataSource.deleteTickerDatabase(book)
-                    localDataSource.insertTickerToDatabase(ticker.toTickerEntity()).also {
-                        Log.i("CriptoCurrencyDataBase", "Ticker inserted")
-                    }
+                    localDataSource.insertTickerToDatabase(ticker.toTickerEntity())
+                    Log.i("CriptoCurrencyDataBase", "Ticker inserted")
                 }
             }
         } else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().let {
@@ -64,10 +63,17 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
     override suspend fun getOrderBook(book: String): OrderBook? =
         if (isInternetAvailable(context)){
             remoteDataSource.getOrderBook(book = book).let {
-                it.body()?.orderBookData?.toOrderBook()
-            }.also {
-                Log.i("CriptoCurrencyDataBase", "OrderBook inserted")
+                it.body()?.orderBookData?.toOrderBook(book)
+            }.also {orderBook ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    localDataSource.deleteOpenOrdersFromDatabase(book)
+                    localDataSource.insertOpenOrdersToDatabase(orderBook?.bids.toBidsEntityList(), orderBook?.asks.toAsksEntityList())
+                    Log.i("CriptoCurrencyDataBase", "OrderBook inserted")
+                }
             }
-        } else null
+        } else localDataSource.getOrderBookfromDatabase(book).let {
+            if (it.book.isNullOrEmpty()) null
+            else it
+        }
 
 }

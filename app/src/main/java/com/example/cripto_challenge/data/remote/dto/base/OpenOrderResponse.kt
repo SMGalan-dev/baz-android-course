@@ -19,6 +19,7 @@ data class OpenOrderResponse (
 ){
     fun toOpenOrder(): OpenOrder =
         OpenOrder(
+            book = book,
             price = price?.formatAsCurrency(),
             amount = amount?.formatAsCurrency()
         )
