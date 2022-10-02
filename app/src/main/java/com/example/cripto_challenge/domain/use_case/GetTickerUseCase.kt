@@ -24,7 +24,7 @@ class GetTickerUseCase @Inject constructor(
                 emit(RequestState.Success(it))
             } ?: run { emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.no_data_internet_error)))}
         } catch (e: HttpException) {
-            emit(RequestState.Error(context.getString(R.string.ticker_error) + e.localizedMessage ?: context.getString(R.string.http_unexpected_error)))
+            emit(RequestState.Error(context.getString(R.string.ticker_error) + e.localizedMessage))
         } catch (e: IOException) {
             emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.interrupted_internet_error)))
         }

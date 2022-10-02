@@ -3,10 +3,9 @@ package com.example.cripto_challenge.data.repository
 import android.content.Context
 import android.util.Log
 import com.example.cripto_challenge.common.utilities.isInternetAvailable
-import com.example.cripto_challenge.common.utilities.toAvailableOrderBookEntityList
-import com.example.cripto_challenge.common.utilities.toAvailableOrderBookListFromEntity
 import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
 import com.example.cripto_challenge.data.database.data_source.CryptoCurrencyLocalDataSource
+import com.example.cripto_challenge.data.database.entities.*
 import com.example.cripto_challenge.data.remote.data_source.CryptoCurrencyNetworkDataSource
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.model.OrderBook
@@ -29,18 +28,18 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
                 it.body()?.availableBooksListData.toMXNAvailableOrderBookList()
             }.also { bookList ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    localDataSource.getAllCryptoCurrencyFromDatabase().run {
+                    localDataSource.getAllAvailableOrderBookFromDatabase().run {
                         if (this.isNullOrEmpty()) {
                             Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity inserted")
-                            localDataSource.insertCryptoCurrencyToDatabase(bookList.toAvailableOrderBookEntityList())
+                            localDataSource.insertAvailableOrderBookToDatabase(bookList.toAvailableOrderBookEntityList())
                         } else {
                             Log.i("CriptoCurrencyDataBase", "AvailableOrderBookEntity updated")
-                            localDataSource.updateCryptoCurrencyToDatabase(bookList.toAvailableOrderBookEntityList())
+                            localDataSource.updateAvailableOrderBookDatabase(bookList.toAvailableOrderBookEntityList())
                         }
                     }
                 }
             }
-        } else localDataSource.getAllCryptoCurrencyFromDatabase().let {
+        } else localDataSource.getAllAvailableOrderBookFromDatabase().let {
             if (it.isNotEmpty()) it.toAvailableOrderBookListFromEntity()
             else null
         }
@@ -49,10 +48,18 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         if (isInternetAvailable(context)){
             remoteDataSource.getTicker(book = book).let {
                 it.body()?.tickerData?.toTicker()
-            }.also {
-                Log.i("CriptoCurrencyDataBase", "Ticker inserted")
+            }?.also { ticker ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    localDataSource.deleteTickerDatabase(book)
+                    localDataSource.insertTickerToDatabase(ticker.toTickerEntity()).also {
+                        Log.i("CriptoCurrencyDataBase", "Ticker inserted")
+                    }
+                }
             }
-        } else null
+        } else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().let {
+            if (it.book.isNullOrEmpty()) null
+            else it
+        }
 
     override suspend fun getOrderBook(book: String): OrderBook? =
         if (isInternetAvailable(context)){
@@ -62,6 +69,5 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
                 Log.i("CriptoCurrencyDataBase", "OrderBook inserted")
             }
         } else null
-
 
 }

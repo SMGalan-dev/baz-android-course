@@ -19,7 +19,7 @@ data class OrderBookResponse (
     var updated_at: Date? = null,
     @SerializedName("sequence")
     @Expose
-    var sequence: Int? = null
+    var sequence: String? = null
 ){
     fun toOrderBook(): OrderBook =
         OrderBook(

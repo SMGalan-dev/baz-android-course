@@ -2,19 +2,34 @@ package com.example.cripto_challenge.data.database.data_source
 
 import com.example.cripto_challenge.data.database.dao.CryptoCurrencyDao
 import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
+import com.example.cripto_challenge.data.database.entities.TickerEntity
 import javax.inject.Inject
 
 class CryptoCurrencyLocalDataSource @Inject constructor(
     private val localDB: CryptoCurrencyDao
 ) {
 
-    suspend fun getAllCryptoCurrencyFromDatabase(): List<AvailableOrderBookEntity> =
-        localDB.getAllCryptoCurrencyFromDatabase()
+    /** Available Books **/
+    fun getAllAvailableOrderBookFromDatabase(): List<AvailableOrderBookEntity> =
+        localDB.getAllAvailableOrderBookFromDatabase()
 
-    suspend fun insertCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>) =
-        localDB.insertCryptoCurrencyToDatabase(bookList)
+    fun insertAvailableOrderBookToDatabase(bookList: List<AvailableOrderBookEntity>) =
+        localDB.insertAvailableOrderBookToDatabase(bookList)
 
-    suspend fun updateCryptoCurrencyToDatabase(bookList: List<AvailableOrderBookEntity>) =
-        localDB.updateCryptoCurrencyToDatabase(bookList)
+    fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBookEntity>) =
+        localDB.updateAvailableOrderBookDatabase(bookList)
+
+    /** Ticker **/
+    fun getTickerFromDatabase(book: String): TickerEntity =
+        localDB.getTickerFromDatabase(book)
+
+    fun insertTickerToDatabase(ticker: TickerEntity) =
+        localDB.insertTickerToDatabase(ticker)
+
+    fun updateTickerDatabase(ticker: TickerEntity) =
+        localDB.updateTickerDatabase(ticker)
+
+    fun deleteTickerDatabase(book: String) =
+        localDB.deleteTickerDatabase(book)
 
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cripto_challenge.common.RequestState
-import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
 import com.example.cripto_challenge.domain.use_case.GetOrderBookUseCase
@@ -31,7 +30,7 @@ class OrderBookDetailViewModel @Inject constructor(
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun getTicker(book: String, error: (info:String)->Unit) {
-        tickerUseCase.invoke(book = book.toBookCodeFormat()).onEach { state ->
+        tickerUseCase.invoke(book = book).onEach { state ->
             when(state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {

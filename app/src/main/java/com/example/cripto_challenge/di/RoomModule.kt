@@ -21,6 +21,7 @@ object RoomModule {
     fun provideRoom(@ApplicationContext context: Context) =
         Room.databaseBuilder(context, CriptoCurrencyDataBase::class.java, CRYPTOCURRENCY_DATABASE_NAME)
             .allowMainThreadQueries()
+            .fallbackToDestructiveMigration()
             .build()
 
     @Singleton

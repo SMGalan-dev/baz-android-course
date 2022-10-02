@@ -22,20 +22,6 @@ fun List<AvailableOrderBookResponse>?.toMXNAvailableOrderBookList() = mutableLis
         }
     }
 
-fun List<AvailableOrderBookEntity>?.toAvailableOrderBookListFromEntity() = mutableListOf<AvailableOrderBook>()
-    .apply {
-        this@toAvailableOrderBookListFromEntity?.forEach {
-            this.add(
-                AvailableOrderBook(
-                    book_code = it.book_code,
-                    book_name = it.book_name,
-                    book_format_code = it.book_format_code,
-                    book_logo = it.book_logo
-                )
-            )
-        }
-    }
-
 fun String?.toBookName(): String  = when(this) {
         BookType.BITCOIN.value -> "Bitcoin"
         BookType.ETHEREUM.value -> "Ethereum"
@@ -48,20 +34,6 @@ fun String?.toBookName(): String  = when(this) {
         BookType.DAI.value -> "Dai"
         BookType.USD_COIN.value -> "USD coin"
         else -> ""
-    }
-
-fun List<AvailableOrderBook>?.toAvailableOrderBookEntityList() = mutableListOf<AvailableOrderBookEntity>()
-    .apply {
-        this@toAvailableOrderBookEntityList?.forEach {
-            this.add(
-                AvailableOrderBookEntity(
-                    book_code = it.book_code,
-                    book_name = it.book_name,
-                    book_format_code = it.book_format_code,
-                    book_logo = it.book_logo
-                )
-            )
-        }
     }
 
 fun isInternetAvailable(context: Context): Boolean {
