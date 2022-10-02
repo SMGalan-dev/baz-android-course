@@ -5,4 +5,6 @@
     <string name="data_internet_error">Couldn\'t reach server. Check your internet connection. \nShowing stored data</string>
     <string name="http_unexpected_error">An unexpected error occurred</string>
     <string name="interrupted_internet_error">Your connection was interrupted</string>
+    <string name="ticker_error">Ticker error: </string>
+    <string name="order_book_error">OrderBook error: </string>
 </resources>

@@ -5,27 +5,33 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cripto_challenge.common.RequestState
+import com.example.cripto_challenge.common.utilities.toBookCodeFormat
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
-import com.example.cripto_challenge.domain.use_case.CurrencyUseCase
+import com.example.cripto_challenge.domain.use_case.GetOrderBookUseCase
+import com.example.cripto_challenge.domain.use_case.GetTickerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class OrderBookDetailViewModel @Inject constructor(private val currencyUseCase: CurrencyUseCase) : ViewModel() {
+class OrderBookDetailViewModel @Inject constructor(
+    private val tickerUseCase: GetTickerUseCase,
+    private val orderBookUseCase: GetOrderBookUseCase
+    ): ViewModel()
+{
 
     private var _ticker = MutableLiveData<Ticker>()
     private var _orderBook = MutableLiveData<OrderBook>()
-    private var _isLoading = MutableLiveData<Boolean>(true)
+    private var _isLoading = MutableLiveData(true)
 
     val ticker: LiveData<Ticker> get() = _ticker
     val orderBook: LiveData<OrderBook> get() = _orderBook
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun getTicker(book: String, error: (info:String)->Unit) {
-        currencyUseCase.getTicker(book = book).onEach { state ->
+        tickerUseCase.invoke(book = book.toBookCodeFormat()).onEach { state ->
             when(state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
@@ -35,9 +41,10 @@ class OrderBookDetailViewModel @Inject constructor(private val currencyUseCase: 
                     }
                 }
                 is RequestState.Error -> {
-                    error(state.message ?: "")
+                    error(state.message.orEmpty())
+                    _ticker.value = Ticker()
                     getOrderBook(book) {
-                        error( "Ticker error: ${state.message}" + "\n" + it)
+                        error( state.message + "\n" + it)
                     }
                 }
             }
@@ -45,7 +52,7 @@ class OrderBookDetailViewModel @Inject constructor(private val currencyUseCase: 
     }
 
     private fun getOrderBook(book: String, error: (info:String)->Unit) {
-        currencyUseCase.getOrderBook(book = book).onEach {
+        orderBookUseCase.invoke(book = book).onEach {
             when(it) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
@@ -53,7 +60,8 @@ class OrderBookDetailViewModel @Inject constructor(private val currencyUseCase: 
                     _isLoading.value = false
                 }
                 is RequestState.Error -> {
-                    error( "Bids/Asks error: ${it.message}")
+                    _orderBook.value = OrderBook()
+                    error(it.message.orEmpty())
                     _isLoading.value = false
                 }
             }
