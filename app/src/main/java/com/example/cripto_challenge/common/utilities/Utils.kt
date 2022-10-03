@@ -1,30 +1,96 @@
 package com.example.cripto_challenge.common.utilities
 
-import com.example.cripto_challenge.R
-import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookDto
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
+import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
+import java.text.NumberFormat
 
-fun List<AvailableOrderBookDto>?.toMXNAvailableOrderBookList() = mutableListOf<AvailableOrderBook>()
+
+fun String?.toBookCodeFormat(): String  =
+    this?.replace("_", "/")?.uppercase() ?: ""
+
+fun Double.formatAsCurrency(): String = NumberFormat.getCurrencyInstance().format(this)
+
+fun List<AvailableOrderBookResponse>?.toMXNAvailableOrderBookList() = mutableListOf<AvailableOrderBook>()
     .apply {
         this@toMXNAvailableOrderBookList?.forEach {
             if (it.book?.contains("mxn") == true) this.add(it.toMXNAvailableOrderBook())
         }
     }
 
-
-fun setLogo(book: String): Int {
-    val icon = when(book) {
-        BookType.BITCOIN.value -> R.drawable.ic_bitcoin_logo
-        BookType.ETHEREUM.value -> R.drawable.ic_ethereum_logo
-        BookType.XRP.value -> R.drawable.ic_xrp_logo
-        BookType.LITECOIN.value -> R.drawable.ic_litecoin_logo
-        BookType.BITCOIN_CASH.value -> R.drawable.ic_bitcoin_cash_logo
-        BookType.TRUEUSD.value -> R.drawable.ic_trueusd_logo
-        BookType.DECETRALAND.value -> R.drawable.ic_decentraland_logo
-        BookType.BASIC_ATENTION_TOKEN.value -> R.drawable.ic_bat_logo
-        BookType.DAI.value -> R.drawable.ic_dai_logo
-        BookType.USD_COIN.value -> R.drawable.ic_usd_coin_logo
-        else -> android.R.drawable.ic_dialog_info
+fun List<AvailableOrderBookEntity>?.toAvailableOrderBookListFromEntity() = mutableListOf<AvailableOrderBook>()
+    .apply {
+        this@toAvailableOrderBookListFromEntity?.forEach {
+            this.add(
+                AvailableOrderBook(
+                    book_code = it.book_code,
+                    book_name = it.book_name,
+                    book_format_code = it.book_format_code,
+                    book_logo = it.book_logo
+                )
+            )
+        }
     }
-    return icon
+
+fun String?.toBookName(): String  = when(this) {
+        BookType.BITCOIN.value -> "Bitcoin"
+        BookType.ETHEREUM.value -> "Ethereum"
+        BookType.XRP.value -> "XRP"
+        BookType.LITECOIN.value -> "Litecoin"
+        BookType.BITCOIN_CASH.value -> "Bitcoin Cash"
+        BookType.TRUEUSD.value -> "True USD"
+        BookType.DECETRALAND.value -> "Decentraland"
+        BookType.BASIC_ATENTION_TOKEN.value -> "Basic Attention Token"
+        BookType.DAI.value -> "Dai"
+        BookType.USD_COIN.value -> "USD coin"
+        else -> ""
+    }
+
+fun List<AvailableOrderBook>?.toAvailableOrderBookEntityList() = mutableListOf<AvailableOrderBookEntity>()
+    .apply {
+        this@toAvailableOrderBookEntityList?.forEach {
+            this.add(
+                AvailableOrderBookEntity(
+                    book_code = it.book_code,
+                    book_name = it.book_name,
+                    book_format_code = it.book_format_code,
+                    book_logo = it.book_logo
+                )
+            )
+        }
+    }
+
+fun isInternetAvailable(context: Context): Boolean {
+    var result = false
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+            connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    } else {
+        connectivityManager.run {
+            connectivityManager.activeNetworkInfo?.run {
+                result = when (type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+
+            }
+        }
+    }
+
+    return result
 }
