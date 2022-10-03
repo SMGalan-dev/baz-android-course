@@ -12,7 +12,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -32,7 +34,9 @@ abstract class NetworkModule {
                         .addNetworkInterceptor(HttpLoggingInterceptor().also {
                             it.setLevel(HttpLoggingInterceptor.Level.BODY)
                         }
-                        ).build()
+                        )
+                        .callTimeout(5, TimeUnit.SECONDS)
+                        .build()
                     val original = chain.request()
                     val request: Request = original.newBuilder()
                         .header("User-Agent", original.url.host)
@@ -48,6 +52,7 @@ abstract class NetworkModule {
                 .client(okHttpClient)
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())  //RxJava
                 .build()
 
         @Singleton

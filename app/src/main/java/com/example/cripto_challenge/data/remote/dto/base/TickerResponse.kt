@@ -48,15 +48,6 @@ data class TickerResponse(
             book = book,
             high = high?.formatAsCurrency(),
             last = last?.formatAsCurrency(),
-            low = low?.formatAsCurrency(),
-            /*
-            volume = volume,
-            vwap = vwap,
-            ask = ask,
-            bid = bid,
-            created_at = created_at,
-            change_24 = change_24,
-            rolling_average_change = rolling_average_change
-             */
+            low = low?.formatAsCurrency()
         )
 }

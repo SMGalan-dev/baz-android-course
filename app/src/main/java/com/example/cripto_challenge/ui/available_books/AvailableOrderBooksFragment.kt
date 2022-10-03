@@ -35,6 +35,11 @@ class AvailableOrderBooksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //getAvailableBooks()
+        getAvailableBooksRxJava()
+    }
+
+    private fun getAvailableBooks() {
         criptoCurrencyVM.getAvailableBooks(
             error ={(activity as MainActivity).noNetworkConnection(it)}
         )
@@ -45,6 +50,20 @@ class AvailableOrderBooksFragment : Fragment() {
                 else {
                     recyclerAvailableBooks.adapter = availableBooksAdapterList.also {
                         it.submitList(criptoCurrencyVM.availableOrderBookList.value)
+                    }
+                    progressAvailableOrderBook.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun getAvailableBooksRxJava() {
+        binding.apply {
+            criptoCurrencyVM.getAvailableBooksRxJava().observe(viewLifecycleOwner){ list ->
+                if (list?.isNullOrEmpty() == true) progressAvailableOrderBook.visibility = View.VISIBLE
+                else {
+                    recyclerAvailableBooks.adapter = availableBooksAdapterList.also {
+                        it.submitList(list)
                     }
                     progressAvailableOrderBook.visibility = View.GONE
                 }
