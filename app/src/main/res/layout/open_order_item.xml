@@ -9,7 +9,7 @@
         android:id="@+id/open_order_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Price"
+        android:hint="@string/price"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,7 +18,7 @@
         android:id="@+id/open_order_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Amount"
+        android:hint="@string/amount"
         android:textSize="22sp"
         android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"

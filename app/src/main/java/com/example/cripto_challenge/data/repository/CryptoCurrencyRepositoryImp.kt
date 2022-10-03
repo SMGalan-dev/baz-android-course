@@ -57,8 +57,8 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         if (isInternetAvailable(context)){
             try {
                 val response = remoteDataSource.getTicker(book = book).let {
-                    it.body()?.tickerData?.toTicker() ?: Ticker()
-                }
+                    it.body()?.tickerData?.toTicker()
+                } ?: run { Ticker()}
                 updateTickerDatabase(book, response)
                 emit(RequestState.Success(response))
             } catch (e: HttpException) {
@@ -77,8 +77,8 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
             try {
                 emit(RequestState.Loading())
                 val response = remoteDataSource.getOrderBook(book).let {
-                    it.body()?.orderBookData?.toOrderBook(book) ?: OrderBook()
-                } //?: run { emit(RequestState.Error(context.getString(R.string.no_data_internet_error)))}
+                    it.body()?.orderBookData?.toOrderBook(book)
+                } ?: OrderBook()
                 updateOrderBookDatabase(book, response)
                 emit(RequestState.Success(response))
             } catch (e: HttpException) {

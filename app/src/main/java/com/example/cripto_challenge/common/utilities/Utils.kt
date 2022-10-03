@@ -4,14 +4,16 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEntity
+import com.example.cripto_challenge.common.Constants
+import com.example.cripto_challenge.common.Constants.DIAGONAL_VALUE
+import com.example.cripto_challenge.common.Constants.UNDERSCORE_VALUE
 import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import java.text.NumberFormat
 
 
 fun String?.toBookCodeFormat(): String  =
-    this?.replace("_", "/")?.uppercase() ?: ""
+    this?.replace(UNDERSCORE_VALUE, DIAGONAL_VALUE)?.uppercase().orEmpty()
 
 fun Double.formatAsCurrency(): String = NumberFormat.getCurrencyInstance().format(this)
 
@@ -23,17 +25,17 @@ fun List<AvailableOrderBookResponse>?.toMXNAvailableOrderBookList() = mutableLis
     }
 
 fun String?.toBookName(): String  = when(this) {
-        BookType.BITCOIN.value -> "Bitcoin"
-        BookType.ETHEREUM.value -> "Ethereum"
-        BookType.XRP.value -> "XRP"
-        BookType.LITECOIN.value -> "Litecoin"
-        BookType.BITCOIN_CASH.value -> "Bitcoin Cash"
-        BookType.TRUEUSD.value -> "True USD"
-        BookType.DECETRALAND.value -> "Decentraland"
-        BookType.BASIC_ATENTION_TOKEN.value -> "Basic Attention Token"
-        BookType.DAI.value -> "Dai"
-        BookType.USD_COIN.value -> "USD coin"
-        else -> ""
+        BookType.BITCOIN.value -> Constants.BITCOIN_NAME
+        BookType.ETHEREUM.value -> Constants.ETHEREUM_NAME
+        BookType.XRP.value -> Constants.XRP_NAME
+        BookType.LITECOIN.value -> Constants.LITECOIN_NAME
+        BookType.BITCOIN_CASH.value -> Constants.BITCOIN_CASH_NAME
+        BookType.TRUEUSD.value -> Constants.TRUE_USD_NAME
+        BookType.DECETRALAND.value -> Constants.DECENTRALAND_NAME
+        BookType.BASIC_ATENTION_TOKEN.value -> Constants.BASIC_ATTENTION_TOKEN_NAME
+        BookType.DAI.value -> Constants.DAI_NAME
+        BookType.USD_COIN.value -> Constants.USD_COIN_NAME
+        else -> orEmpty()
     }
 
 fun isInternetAvailable(context: Context): Boolean {

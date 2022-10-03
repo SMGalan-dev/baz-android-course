@@ -7,4 +7,17 @@
     <string name="interrupted_internet_error">Your connection was interrupted</string>
     <string name="ticker_error">Ticker error: </string>
     <string name="order_book_error">OrderBook error: </string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="btc_mxn">BTC-MXN</string>
+    <string name="wallet">Wallet</string>
+    <string name="an_error_has_occurred">An error has occurred!</string>
+    <string name="price">Price</string>
+    <string name="amount">Amount</string>
+    <string name="book">BOOK</string>
+    <string name="book_code_text">book-code</string>
+    <string name="last_price">Last Price</string>
+    <string name="high_price">High price</string>
+    <string name="low_price">low price</string>
+    <string name="bids">Bids</string>
+    <string name="asks">Asks</string>
 </resources>

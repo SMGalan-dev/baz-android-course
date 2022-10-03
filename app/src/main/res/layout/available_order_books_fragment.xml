@@ -20,7 +20,7 @@
         android:id="@+id/tv_wallet"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Wallet"
+        android:text="@string/wallet"
         android:textColor="@android:color/holo_orange_dark"
         android:paddingTop="8dp"
         android:textSize="22sp"
