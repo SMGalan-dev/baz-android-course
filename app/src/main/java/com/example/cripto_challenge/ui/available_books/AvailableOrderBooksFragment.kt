@@ -35,8 +35,8 @@ class AvailableOrderBooksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //getAvailableBooks()
-        getAvailableBooksRxJava()
+        getAvailableBooks()
+        //getAvailableBooksRxJava()
     }
 
     private fun getAvailableBooks() {

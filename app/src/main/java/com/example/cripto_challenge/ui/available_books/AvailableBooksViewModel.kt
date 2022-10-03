@@ -33,12 +33,12 @@ class AvailableBooksViewModel @Inject constructor(
             when(state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
-                    _availableOrderBookList.value = state.data.orEmpty()
+                    _availableOrderBookList.value = state.data
                     _isLoading.value = false
                 }
                 is RequestState.Error -> {
                     error(state.message.orEmpty())
-                    _availableOrderBookList.value = emptyList()
+                    _availableOrderBookList.value = state.data
                     _isLoading.value = false
                 }
             }

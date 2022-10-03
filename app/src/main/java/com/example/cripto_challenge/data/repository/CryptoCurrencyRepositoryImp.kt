@@ -3,6 +3,8 @@ package com.example.cripto_challenge.data.repository
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.cripto_challenge.R
+import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.common.utilities.isInternetAvailable
 import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
 import com.example.cripto_challenge.data.database.data_source.CryptoCurrencyLocalDataSource
@@ -17,7 +19,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class CryptoCurrencyRepositoryImp @Inject constructor(
@@ -26,15 +32,25 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
     private val localDataSource: CryptoCurrencyLocalDataSource,
 ): CryptoCurrencyRepository{
 
-    override suspend fun getAvailableBooks(): List<AvailableOrderBook>? =
+    override fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>> = flow {
+        emit(RequestState.Loading())
         if (isInternetAvailable(context)) {
-            remoteDataSource.getAvailableBooks().let {
-                it.body()?.availableBooksListData.toMXNAvailableOrderBookList()
-            }.also{bookList -> updateAvailableOrderBookDatabase(bookList)}
-        } else localDataSource.getAllAvailableOrderBookFromDatabase().let {
-            if (it.isNotEmpty()) it.toAvailableOrderBookListFromEntity()
-            else null
+            try {
+                val response = remoteDataSource.getAvailableBooks().let {
+                    it.body()?.availableBooksListData.toMXNAvailableOrderBookList()
+                }
+                updateAvailableOrderBookDatabase(response)
+                emit(RequestState.Success(response))
+            } catch (e: HttpException) {
+                emit(RequestState.Error(e.localizedMessage ?: context.getString(R.string.http_unexpected_error)))
+            } catch (e: IOException) {
+                emit(RequestState.Error(context.getString(R.string.interrupted_internet_error)))
+            }
+        } else localDataSource.getAllAvailableOrderBookFromDatabase().run {
+            if (this.isNullOrEmpty()) emit(RequestState.Error(context.getString(R.string.no_data_internet_error)))
+            else emit(RequestState.Error(context.getString(R.string.data_internet_error), this.toAvailableOrderBookListFromEntity()))
         }
+    }
 
     override suspend fun getTicker(book: String): Ticker? =
         if (isInternetAvailable(context)){

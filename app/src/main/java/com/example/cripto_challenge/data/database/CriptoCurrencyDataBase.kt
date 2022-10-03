@@ -8,7 +8,7 @@ import com.example.cripto_challenge.data.database.entities.AvailableOrderBookEnt
 import com.example.cripto_challenge.data.database.entities.BidsEntity
 import com.example.cripto_challenge.data.database.entities.TickerEntity
 
-@Database(entities = [AvailableOrderBookEntity::class, TickerEntity::class, AsksEntity::class, BidsEntity::class], version = 2)
+@Database(entities = [AvailableOrderBookEntity::class, TickerEntity::class, AsksEntity::class, BidsEntity::class], version = 1, exportSchema = false)
 abstract class CriptoCurrencyDataBase: RoomDatabase() {
 
     abstract fun getCriptoCurrencyDao(): CryptoCurrencyDao
