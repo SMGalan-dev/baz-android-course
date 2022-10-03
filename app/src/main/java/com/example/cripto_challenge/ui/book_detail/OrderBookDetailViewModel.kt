@@ -40,8 +40,8 @@ class OrderBookDetailViewModel @Inject constructor(
                     }
                 }
                 is RequestState.Error -> {
-                    error(state.message.orEmpty())
                     _ticker.value = state.data ?: Ticker()
+                    error(state.message.orEmpty())
                     getOrderBook(book) {
                         error( state.message + "\n" + it)
                     }
@@ -59,7 +59,7 @@ class OrderBookDetailViewModel @Inject constructor(
                     _isLoading.value = false
                 }
                 is RequestState.Error -> {
-                    _orderBook.value = OrderBook()
+                    _orderBook.value = it.data ?: OrderBook()
                     error(it.message.orEmpty())
                     _isLoading.value = false
                 }

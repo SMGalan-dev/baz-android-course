@@ -57,7 +57,7 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         if (isInternetAvailable(context)){
             try {
                 val response = remoteDataSource.getTicker(book = book).let {
-                    it.body()?.tickerData?.toTicker()  ?: Ticker()
+                    it.body()?.tickerData?.toTicker() ?: Ticker()
                 }
                 updateTickerDatabase(book, response)
                 emit(RequestState.Success(response))
@@ -67,20 +67,30 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
                 emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.interrupted_internet_error)))
             }
         }else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().run {
-            if (this.high.isNullOrEmpty()) emit(RequestState.Error(context.getString(R.string.no_data_internet_error)))
-            else emit(RequestState.Error(context.getString(R.string.data_internet_error), this))
+            if (this.book.isNullOrEmpty()) emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.no_data_internet_error)))
+            else emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.data_internet_error), this))
         }
     }
 
-    override suspend fun getOrderBook(book: String): OrderBook? =
+    override fun getOrderBook(book: String): Flow<RequestState<OrderBook>> = flow {
         if (isInternetAvailable(context)){
-            remoteDataSource.getOrderBook(book = book).let {
-                it.body()?.orderBookData?.toOrderBook(book)
-            }.also {orderBook -> updateOrderBookDatabase(book, orderBook)}
-        } else localDataSource.getOrderBookfromDatabase(book).let {
-            if (it.book.isNullOrEmpty()) null
-            else it
+            try {
+                emit(RequestState.Loading())
+                val response = remoteDataSource.getOrderBook(book).let {
+                    it.body()?.orderBookData?.toOrderBook(book) ?: OrderBook()
+                } //?: run { emit(RequestState.Error(context.getString(R.string.no_data_internet_error)))}
+                updateOrderBookDatabase(book, response)
+                emit(RequestState.Success(response))
+            } catch (e: HttpException) {
+                emit(RequestState.Error(context.getString(R.string.order_book_error) + e.localizedMessage))
+            } catch (e: IOException) {
+                emit(RequestState.Error(context.getString(R.string.order_book_error) + context.getString(R.string.interrupted_internet_error)))
+            }
+        } else localDataSource.getOrderBookfromDatabase(book).run {
+            if (this.asks.isNullOrEmpty()) emit(RequestState.Error(context.getString(R.string.order_book_error) + context.getString(R.string.no_data_internet_error)))
+            else emit(RequestState.Error(context.getString(R.string.order_book_error) + context.getString(R.string.data_internet_error), this))
         }
+    }
 
     override fun getAvailableBooksRxJava(): MutableLiveData<List<AvailableOrderBook>> = MutableLiveData<List<AvailableOrderBook>>().apply{
         if (isInternetAvailable(context)){
