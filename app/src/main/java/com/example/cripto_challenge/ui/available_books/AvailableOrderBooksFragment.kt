@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.cripto_challenge.MainActivity
 import com.example.cripto_challenge.R
 import com.example.cripto_challenge.common.adapters.AvailableBooksListAdapter
+import com.example.cripto_challenge.common.utilities.isInternetAvailable
 import com.example.cripto_challenge.databinding.AvailableOrderBooksFragmentBinding
 
 class AvailableOrderBooksFragment : Fragment() {
@@ -36,8 +38,8 @@ class AvailableOrderBooksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getAvailableBooks()
-        // getAvailableBooksRxJava()
+        // getAvailableBooks()
+        getAvailableBooksRxJava()
     }
 
     private fun getAvailableBooks() {
@@ -59,6 +61,7 @@ class AvailableOrderBooksFragment : Fragment() {
     }
 
     private fun getAvailableBooksRxJava() {
+        if (isInternetAvailable(requireContext())){
         binding.apply {
             criptoCurrencyVM.getAvailableBooksRxJava().observe(viewLifecycleOwner) { list ->
                 if (list?.isNullOrEmpty() == true) progressAvailableOrderBook.visibility = View.VISIBLE
@@ -69,6 +72,9 @@ class AvailableOrderBooksFragment : Fragment() {
                     progressAvailableOrderBook.visibility = View.GONE
                 }
             }
+        }
+        } else {
+            getAvailableBooks()
         }
     }
 }

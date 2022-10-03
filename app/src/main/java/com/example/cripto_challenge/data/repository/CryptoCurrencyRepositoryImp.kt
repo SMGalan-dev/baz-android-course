@@ -92,24 +92,7 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         }
     }
 
-    override fun getAvailableBooksRxJava(): MutableLiveData<List<AvailableOrderBook>> = MutableLiveData<List<AvailableOrderBook>>().apply {
-        if (isInternetAvailable(context)) {
-            CompositeDisposable().add(
-                remoteDataSource.getAvailableBooksRxJava()
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (it != null && it.isSuccessful) {
-                            with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()) {
-                                this@apply.postValue(this)
-                                updateAvailableOrderBookDatabase(this)
-                            }
-                        }
-                    }
-            )
-        } else localDataSource.getAllAvailableOrderBookFromDatabase().let {
-            this@apply.postValue(it.toAvailableOrderBookListFromEntity())
-        }
-    }
+    override fun getAvailableBooksRxJava() = remoteDataSource.getAvailableBooksRxJava()
 
     private fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>) {
         CoroutineScope(Dispatchers.IO).launch {

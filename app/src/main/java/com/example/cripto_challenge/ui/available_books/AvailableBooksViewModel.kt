@@ -5,10 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cripto_challenge.common.RequestState
+import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.use_case.GetAvailableBooksRxJavaUseCase
 import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -25,7 +29,22 @@ class AvailableBooksViewModel @Inject constructor(
     val availableOrderBookList: LiveData<List<AvailableOrderBook>?> get() = _availableOrderBookList
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun getAvailableBooksRxJava() = availableBooksRxJavaUseCase.invoke()
+    fun getAvailableBooksRxJava() = MutableLiveData<List<AvailableOrderBook>>().apply {
+        CompositeDisposable().add(
+            availableBooksRxJavaUseCase.invoke()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it != null && it.isSuccessful) {
+                        with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()) {
+                            this@apply.postValue(this)
+                        }
+                    }
+                }
+
+        )
+
+    }
 
     fun getAvailableBooks(error: (info: String) -> Unit) {
         availableBooksUseCase.invoke().onEach { state ->
