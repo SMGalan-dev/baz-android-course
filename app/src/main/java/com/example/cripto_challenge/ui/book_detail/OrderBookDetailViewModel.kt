@@ -41,7 +41,7 @@ class OrderBookDetailViewModel @Inject constructor(
                 }
                 is RequestState.Error -> {
                     error(state.message.orEmpty())
-                    _ticker.value = Ticker()
+                    _ticker.value = state.data ?: Ticker()
                     getOrderBook(book) {
                         error( state.message + "\n" + it)
                     }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CryptoCurrencyRepository {
     fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>>
-    suspend fun getTicker(book: String): Ticker?
+    fun getTicker(book: String):  Flow<RequestState<Ticker>>
     suspend fun getOrderBook(book: String): OrderBook?
     fun getAvailableBooksRxJava(): MutableLiveData<List<AvailableOrderBook>>
 }

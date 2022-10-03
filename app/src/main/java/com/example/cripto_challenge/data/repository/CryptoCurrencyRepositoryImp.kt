@@ -52,15 +52,25 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun getTicker(book: String): Ticker? =
+    override fun getTicker(book: String): Flow<RequestState<Ticker>> = flow {
+        emit(RequestState.Loading())
         if (isInternetAvailable(context)){
-            remoteDataSource.getTicker(book = book).let {
-                it.body()?.tickerData?.toTicker()
-            }?.also { ticker -> updateTickerDatabase(book, ticker)}
-        } else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().let {
-            if (it.book.isNullOrEmpty()) null
-            else it
+            try {
+                val response = remoteDataSource.getTicker(book = book).let {
+                    it.body()?.tickerData?.toTicker()  ?: Ticker()
+                }
+                updateTickerDatabase(book, response)
+                emit(RequestState.Success(response))
+            } catch (e: HttpException) {
+                emit(RequestState.Error(context.getString(R.string.ticker_error) + e.localizedMessage))
+            } catch (e: IOException) {
+                emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.interrupted_internet_error)))
+            }
+        }else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().run {
+            if (this.high.isNullOrEmpty()) emit(RequestState.Error(context.getString(R.string.no_data_internet_error)))
+            else emit(RequestState.Error(context.getString(R.string.data_internet_error), this))
         }
+    }
 
     override suspend fun getOrderBook(book: String): OrderBook? =
         if (isInternetAvailable(context)){
