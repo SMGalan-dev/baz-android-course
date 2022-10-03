@@ -34,14 +34,12 @@ class AvailableBooksListAdapter(
     }
 
     inner class ViewHolder(private val itemBinding: AvailableOrderBookItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindItem(item: AvailableOrderBook) {
-            itemBinding.apply {
-                availableBookCode.text = item.book_format_code
-                availableOrderBookName.text = item.book_name
-                availableOrderBookLogo.setImageDrawable(ContextCompat.getDrawable(itemBinding.root.context, item.book_logo ?: 0))
-                itemView.setOnClickListener {
-                    itemClick(item)
-                }
+        fun bindItem(item: AvailableOrderBook) = with(itemBinding) {
+            availableBookCode.text = item.book_format_code
+            availableOrderBookName.text = item.book_name
+            availableOrderBookLogo.setImageDrawable(ContextCompat.getDrawable(itemBinding.root.context, item.book_logo ?: 0))
+            itemView.setOnClickListener {
+                itemClick(item)
             }
         }
     }

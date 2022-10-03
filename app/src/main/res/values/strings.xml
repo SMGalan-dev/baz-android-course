@@ -20,4 +20,5 @@
     <string name="low_price">low price</string>
     <string name="bids">Bids</string>
     <string name="asks">Asks</string>
+    <string name="crypto_icon">Crypto icon</string>
 </resources>

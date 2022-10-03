@@ -14,14 +14,15 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_icon_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/available_order_book_name"
-        app:layout_constraintBottom_toTopOf="@id/available_book_code"/>
+        app:layout_constraintBottom_toTopOf="@id/available_book_code"
+        android:contentDescription="@string/crypto_icon" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/available_order_book_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/bitcoin"
-        android:paddingStart="5dp"
+        android:layout_marginStart="5dp"
         android:paddingTop="5dp"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -34,7 +35,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/btc_mxn"
         android:paddingVertical="5dp"
-        android:paddingStart="5dp"
+        android:layout_marginStart="5dp"
         android:textColor="@android:color/darker_gray"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/guideline_icon_vertical"
@@ -43,7 +44,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="5dp"
+        android:layout_marginEnd="5dp"
         android:src="@android:drawable/ic_menu_add"
         app:tint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"

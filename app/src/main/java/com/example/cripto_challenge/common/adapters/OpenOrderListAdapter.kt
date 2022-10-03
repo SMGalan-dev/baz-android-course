@@ -31,11 +31,9 @@ class OpenOrderListAdapter() : ListAdapter<OpenOrder, OpenOrderListAdapter.ViewH
     }
 
     inner class ViewHolder(private val itemBinding: OpenOrderItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindItem(item: OpenOrder) {
-            itemBinding.apply {
-                openOrderPrice.text = item.price.toString()
-                openOrderAmount.text = item.amount.toString()
-            }
+        fun bindItem(item: OpenOrder) = with(itemBinding) {
+            openOrderPrice.text = item.price.toString()
+            openOrderAmount.text = item.amount.toString()
         }
     }
 }
