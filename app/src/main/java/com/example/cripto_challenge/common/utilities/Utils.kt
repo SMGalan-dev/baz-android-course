@@ -11,8 +11,7 @@ import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookRespo
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import java.text.NumberFormat
 
-
-fun String?.toBookCodeFormat(): String  =
+fun String?.toBookCodeFormat(): String =
     this?.replace(UNDERSCORE_VALUE, DIAGONAL_VALUE)?.uppercase().orEmpty()
 
 fun Double.formatAsCurrency(): String = NumberFormat.getCurrencyInstance().format(this)
@@ -24,19 +23,19 @@ fun List<AvailableOrderBookResponse>?.toMXNAvailableOrderBookList() = mutableLis
         }
     }
 
-fun String?.toBookName(): String  = when(this) {
-        BookType.BITCOIN.value -> Constants.BITCOIN_NAME
-        BookType.ETHEREUM.value -> Constants.ETHEREUM_NAME
-        BookType.XRP.value -> Constants.XRP_NAME
-        BookType.LITECOIN.value -> Constants.LITECOIN_NAME
-        BookType.BITCOIN_CASH.value -> Constants.BITCOIN_CASH_NAME
-        BookType.TRUEUSD.value -> Constants.TRUE_USD_NAME
-        BookType.DECETRALAND.value -> Constants.DECENTRALAND_NAME
-        BookType.BASIC_ATENTION_TOKEN.value -> Constants.BASIC_ATTENTION_TOKEN_NAME
-        BookType.DAI.value -> Constants.DAI_NAME
-        BookType.USD_COIN.value -> Constants.USD_COIN_NAME
-        else -> orEmpty()
-    }
+fun String?.toBookName(): String = when (this) {
+    BookType.BITCOIN.value -> Constants.BITCOIN_NAME
+    BookType.ETHEREUM.value -> Constants.ETHEREUM_NAME
+    BookType.XRP.value -> Constants.XRP_NAME
+    BookType.LITECOIN.value -> Constants.LITECOIN_NAME
+    BookType.BITCOIN_CASH.value -> Constants.BITCOIN_CASH_NAME
+    BookType.TRUEUSD.value -> Constants.TRUE_USD_NAME
+    BookType.DECETRALAND.value -> Constants.DECENTRALAND_NAME
+    BookType.BASIC_ATENTION_TOKEN.value -> Constants.BASIC_ATTENTION_TOKEN_NAME
+    BookType.DAI.value -> Constants.DAI_NAME
+    BookType.USD_COIN.value -> Constants.USD_COIN_NAME
+    else -> orEmpty()
+}
 
 fun isInternetAvailable(context: Context): Boolean {
     var result = false
@@ -61,7 +60,6 @@ fun isInternetAvailable(context: Context): Boolean {
                     ConnectivityManager.TYPE_ETHERNET -> true
                     else -> false
                 }
-
             }
         }
     }

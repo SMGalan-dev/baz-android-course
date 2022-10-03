@@ -6,8 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-
-data class OrderBookResponse (
+data class OrderBookResponse(
     @SerializedName("asks")
     @Expose
     var asks: List<OpenOrderResponse>? = null,
@@ -20,7 +19,7 @@ data class OrderBookResponse (
     @SerializedName("sequence")
     @Expose
     var sequence: String? = null
-){
+) {
     fun toOrderBook(book: String): OrderBook =
         OrderBook(
             book = book,
@@ -32,7 +31,7 @@ data class OrderBookResponse (
         get() = mutableListOf<OpenOrder>()
             .apply {
                 this@toOrderBookList?.forEach {
-                    this.add(it.toOpenOrder() )
+                    this.add(it.toOpenOrder())
                 }
             }
 }

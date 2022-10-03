@@ -26,7 +26,8 @@ class AvailableOrderBooksFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = AvailableOrderBooksFragmentBinding.inflate(layoutInflater, container, false)
@@ -36,16 +37,16 @@ class AvailableOrderBooksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getAvailableBooks()
-        //getAvailableBooksRxJava()
+        // getAvailableBooksRxJava()
     }
 
     private fun getAvailableBooks() {
         criptoCurrencyVM.getAvailableBooks(
-            error ={(activity as MainActivity).noNetworkConnection(it)}
+            error = { (activity as MainActivity).noNetworkConnection(it) }
         )
 
         binding.apply {
-            criptoCurrencyVM.isLoading.observe(viewLifecycleOwner){ isLoading ->
+            criptoCurrencyVM.isLoading.observe(viewLifecycleOwner) { isLoading ->
                 if (isLoading) progressAvailableOrderBook.visibility = View.VISIBLE
                 else {
                     recyclerAvailableBooks.adapter = availableBooksAdapterList.also {
@@ -59,7 +60,7 @@ class AvailableOrderBooksFragment : Fragment() {
 
     private fun getAvailableBooksRxJava() {
         binding.apply {
-            criptoCurrencyVM.getAvailableBooksRxJava().observe(viewLifecycleOwner){ list ->
+            criptoCurrencyVM.getAvailableBooksRxJava().observe(viewLifecycleOwner) { list ->
                 if (list?.isNullOrEmpty() == true) progressAvailableOrderBook.visibility = View.VISIBLE
                 else {
                     recyclerAvailableBooks.adapter = availableBooksAdapterList.also {

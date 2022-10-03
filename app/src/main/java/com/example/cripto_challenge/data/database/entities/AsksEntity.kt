@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.example.cripto_challenge.domain.model.OpenOrder
 
 @Entity(tableName = "asks_table")
-data class AsksEntity (
+data class AsksEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "book") var book: String? = null,

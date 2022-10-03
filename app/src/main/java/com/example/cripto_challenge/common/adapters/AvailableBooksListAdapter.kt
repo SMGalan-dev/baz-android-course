@@ -1,6 +1,5 @@
 package com.example.cripto_challenge.common.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -12,10 +11,10 @@ import com.example.cripto_challenge.domain.model.AvailableOrderBook
 
 class AvailableBooksListAdapter(
     val itemClick: (AvailableOrderBook?) -> Unit
-): ListAdapter<AvailableOrderBook, AvailableBooksListAdapter.ViewHolder>(difCallback){
-    
-    companion object{
-        val difCallback = object : DiffUtil.ItemCallback<AvailableOrderBook>(){
+) : ListAdapter<AvailableOrderBook, AvailableBooksListAdapter.ViewHolder>(difCallback) {
+
+    companion object {
+        val difCallback = object : DiffUtil.ItemCallback<AvailableOrderBook>() {
             override fun areItemsTheSame(oldItem: AvailableOrderBook, newItem: AvailableOrderBook): Boolean {
                 return oldItem.book_code == newItem.book_code
             }
@@ -35,7 +34,7 @@ class AvailableBooksListAdapter(
     }
 
     inner class ViewHolder(private val itemBinding: AvailableOrderBookItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bindItem (item: AvailableOrderBook){
+        fun bindItem(item: AvailableOrderBook) {
             itemBinding.apply {
                 availableBookCode.text = item.book_format_code
                 availableOrderBookName.text = item.book_name

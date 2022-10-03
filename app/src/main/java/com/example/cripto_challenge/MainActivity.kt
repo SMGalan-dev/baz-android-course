@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    fun noNetworkConnection(info: String){
+    fun noNetworkConnection(info: String) {
         binding.tvErrorInfo.text = info
         binding.layoutErrorOcurred.visibility = View.VISIBLE
         binding.btnCloseErrorMessage.setOnClickListener {

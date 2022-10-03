@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class TickerBaseResponse (
+data class TickerBaseResponse(
     @SerializedName("success")
     @Expose
     var success: Boolean? = null,
@@ -16,5 +16,4 @@ data class TickerBaseResponse (
     @SerializedName("error")
     @Expose
     var error: ErrorResponse? = null
-): Serializable
-
+) : Serializable

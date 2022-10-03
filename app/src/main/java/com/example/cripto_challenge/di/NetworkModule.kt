@@ -23,7 +23,7 @@ abstract class NetworkModule {
     @Binds
     abstract fun provideCryptoRepository(cryptoCurrencyRepositoryImp: CryptoCurrencyRepositoryImp): CryptoCurrencyRepository
 
-    companion object{
+    companion object {
 
         private const val BASE_URL = "https://api.bitso.com/v3/"
 
@@ -31,9 +31,10 @@ abstract class NetworkModule {
             OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val client: OkHttpClient = OkHttpClient.Builder()
-                        .addNetworkInterceptor(HttpLoggingInterceptor().also {
-                            it.setLevel(HttpLoggingInterceptor.Level.BODY)
-                        }
+                        .addNetworkInterceptor(
+                            HttpLoggingInterceptor().also {
+                                it.setLevel(HttpLoggingInterceptor.Level.BODY)
+                            }
                         )
                         .callTimeout(5, TimeUnit.SECONDS)
                         .build()
@@ -47,18 +48,17 @@ abstract class NetworkModule {
 
         @Singleton
         @Provides
-        fun getRetrofit():Retrofit =
+        fun getRetrofit(): Retrofit =
             Retrofit.Builder()
                 .client(okHttpClient)
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())  //RxJava
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // RxJava
                 .build()
 
         @Singleton
         @Provides
         fun repository(retrofit: Retrofit): BitsoServiceApi =
             retrofit.create(BitsoServiceApi::class.java)
-
     }
 }

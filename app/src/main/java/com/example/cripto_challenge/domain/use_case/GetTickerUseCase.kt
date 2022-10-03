@@ -6,8 +6,7 @@ import com.example.cripto_challenge.domain.model.Ticker
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetTickerUseCase @Inject constructor(private val repository: CryptoCurrencyRepository){
+class GetTickerUseCase @Inject constructor(private val repository: CryptoCurrencyRepository) {
 
     operator fun invoke(book: String): Flow<RequestState<Ticker>> = repository.getTicker(book)
-
 }

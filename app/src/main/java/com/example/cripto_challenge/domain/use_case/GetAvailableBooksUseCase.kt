@@ -6,8 +6,7 @@ import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAvailableBooksUseCase @Inject constructor(private val repository: CryptoCurrencyRepository){
+class GetAvailableBooksUseCase @Inject constructor(private val repository: CryptoCurrencyRepository) {
 
     operator fun invoke(): Flow<RequestState<List<AvailableOrderBook>>> = repository.getAvailableBooks()
-
 }

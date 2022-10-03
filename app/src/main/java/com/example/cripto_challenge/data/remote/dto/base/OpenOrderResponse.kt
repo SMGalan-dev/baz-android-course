@@ -5,8 +5,7 @@ import com.example.cripto_challenge.domain.model.OpenOrder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-
-data class OpenOrderResponse (
+data class OpenOrderResponse(
     @SerializedName("book")
     @Expose
     var book: String? = null,
@@ -16,7 +15,7 @@ data class OpenOrderResponse (
     @SerializedName("amount")
     @Expose
     var amount: Double? = null
-){
+) {
     fun toOpenOrder(): OpenOrder =
         OpenOrder(
             book = book,

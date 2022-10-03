@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
 
-
 data class TickerResponse(
     @SerializedName("book")
     @Expose
@@ -42,7 +41,7 @@ data class TickerResponse(
     @SerializedName("rolling_average_change")
     @Expose
     var rolling_average_change: Any? = null,
-): Serializable {
+) : Serializable {
     fun toTicker(): Ticker =
         Ticker(
             book = book,

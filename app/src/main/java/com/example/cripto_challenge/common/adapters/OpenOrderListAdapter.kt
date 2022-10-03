@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cripto_challenge.databinding.OpenOrderItemBinding
 import com.example.cripto_challenge.domain.model.OpenOrder
 
-class OpenOrderListAdapter(): ListAdapter<OpenOrder, OpenOrderListAdapter.ViewHolder>(difCallback){
-    
-    companion object{
-        val difCallback = object : DiffUtil.ItemCallback<OpenOrder>(){
+class OpenOrderListAdapter() : ListAdapter<OpenOrder, OpenOrderListAdapter.ViewHolder>(difCallback) {
+
+    companion object {
+        val difCallback = object : DiffUtil.ItemCallback<OpenOrder>() {
             override fun areItemsTheSame(oldItem: OpenOrder, newItem: OpenOrder): Boolean {
                 return oldItem.amount == newItem.amount
             }
@@ -29,7 +29,6 @@ class OpenOrderListAdapter(): ListAdapter<OpenOrder, OpenOrderListAdapter.ViewHo
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.bindItem(getItem(position))
     }
-
 
     inner class ViewHolder(private val itemBinding: OpenOrderItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bindItem(item: OpenOrder) {

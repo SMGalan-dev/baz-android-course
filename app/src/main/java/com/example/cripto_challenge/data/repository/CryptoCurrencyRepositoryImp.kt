@@ -30,7 +30,7 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
     @ApplicationContext private val context: Context,
     private val remoteDataSource: CryptoCurrencyNetworkDataSource,
     private val localDataSource: CryptoCurrencyLocalDataSource,
-): CryptoCurrencyRepository{
+) : CryptoCurrencyRepository {
 
     override fun getAvailableBooks(): Flow<RequestState<List<AvailableOrderBook>>> = flow {
         emit(RequestState.Loading())
@@ -54,11 +54,11 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
 
     override fun getTicker(book: String): Flow<RequestState<Ticker>> = flow {
         emit(RequestState.Loading())
-        if (isInternetAvailable(context)){
+        if (isInternetAvailable(context)) {
             try {
                 val response = remoteDataSource.getTicker(book = book).let {
                     it.body()?.tickerData?.toTicker()
-                } ?: run { Ticker()}
+                } ?: run { Ticker() }
                 updateTickerDatabase(book, response)
                 emit(RequestState.Success(response))
             } catch (e: HttpException) {
@@ -66,14 +66,14 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
             } catch (e: IOException) {
                 emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.interrupted_internet_error)))
             }
-        }else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().run {
+        } else localDataSource.getTickerFromDatabase(book).toTickerFromEntity().run {
             if (this.book.isNullOrEmpty()) emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.no_data_internet_error)))
             else emit(RequestState.Error(context.getString(R.string.ticker_error) + context.getString(R.string.data_internet_error), this))
         }
     }
 
     override fun getOrderBook(book: String): Flow<RequestState<OrderBook>> = flow {
-        if (isInternetAvailable(context)){
+        if (isInternetAvailable(context)) {
             try {
                 emit(RequestState.Loading())
                 val response = remoteDataSource.getOrderBook(book).let {
@@ -92,25 +92,26 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         }
     }
 
-    override fun getAvailableBooksRxJava(): MutableLiveData<List<AvailableOrderBook>> = MutableLiveData<List<AvailableOrderBook>>().apply{
-        if (isInternetAvailable(context)){
-            CompositeDisposable().add(remoteDataSource.getAvailableBooksRxJava()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (it != null && it.isSuccessful){
-                        with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()){
-                            this@apply.postValue(this)
-                            updateAvailableOrderBookDatabase(this)
+    override fun getAvailableBooksRxJava(): MutableLiveData<List<AvailableOrderBook>> = MutableLiveData<List<AvailableOrderBook>>().apply {
+        if (isInternetAvailable(context)) {
+            CompositeDisposable().add(
+                remoteDataSource.getAvailableBooksRxJava()
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (it != null && it.isSuccessful) {
+                            with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()) {
+                                this@apply.postValue(this)
+                                updateAvailableOrderBookDatabase(this)
+                            }
                         }
                     }
-                }
             )
         } else localDataSource.getAllAvailableOrderBookFromDatabase().let {
             this@apply.postValue(it.toAvailableOrderBookListFromEntity())
         }
     }
 
-    private fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>){
+    private fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>) {
         CoroutineScope(Dispatchers.IO).launch {
             localDataSource.getAllAvailableOrderBookFromDatabase().run {
                 if (this.isNullOrEmpty()) {
@@ -139,5 +140,4 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
             Log.i("CriptoCurrencyDataBase", "OrderBook inserted")
         }
     }
-
 }

@@ -10,7 +10,7 @@ class AvailableOrderBookResponseTest {
 
     @Test
     fun `Convertion of an Response to required MXNAvailableOrderBook`() {
-        //Given
+        // Given
         systemUnderTest = AvailableOrderBookResponse(
             "btc_mxn",
             "0.00000030000",
@@ -21,10 +21,10 @@ class AvailableOrderBookResponseTest {
             "200000000",
         )
 
-        //When
+        // When
         val result = systemUnderTest.toMXNAvailableOrderBook()
 
-        //Then
+        // Then
         assert(
             result == AvailableOrderBook(
                 book_code = "btc_mxn",
@@ -37,7 +37,7 @@ class AvailableOrderBookResponseTest {
 
     @Test
     fun `Convertion of Response without mxn required to MXNAvailableOrderBook`() {
-        //Given
+        // Given
         systemUnderTest = AvailableOrderBookResponse(
             "btc_abc",
             "0.00000030000",
@@ -48,10 +48,10 @@ class AvailableOrderBookResponseTest {
             "200000000",
         )
 
-        //When
+        // When
         val result = systemUnderTest.toMXNAvailableOrderBook()
 
-        //Then
+        // Then
         assert(
             result == AvailableOrderBook()
         )

@@ -7,7 +7,7 @@ import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class AvailableOrderBookResponse (
+data class AvailableOrderBookResponse(
     @SerializedName("book")
     @Expose
     var book: String? = null,
@@ -29,13 +29,13 @@ data class AvailableOrderBookResponse (
     @SerializedName("maximum_value")
     @Expose
     var maximum_value: String? = null
-){
+) {
     fun toMXNAvailableOrderBook(): AvailableOrderBook =
-        when(book) {
+        when (book) {
             BookType.BITCOIN.value -> AvailableOrderBook(
                 book_code = book, book_name = "Bitcoin", book_format_code = book.toBookCodeFormat(), book_logo = R.drawable.ic_bitcoin_logo
             )
-            BookType.ETHEREUM.value ->  AvailableOrderBook(
+            BookType.ETHEREUM.value -> AvailableOrderBook(
                 book_code = book, book_name = "Ethereum", book_format_code = book.toBookCodeFormat(), book_logo = R.drawable.ic_ethereum_logo
             )
             BookType.XRP.value -> AvailableOrderBook(

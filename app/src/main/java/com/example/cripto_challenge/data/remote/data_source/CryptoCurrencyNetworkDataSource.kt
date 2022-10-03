@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class CryptoCurrencyNetworkDataSource @Inject constructor(
     private val api: BitsoServiceApi
-){
+) {
     suspend fun getAvailableBooks(): Response<AvailableBooksBaseResponse> =
         api.getAvailableBooks()
 
@@ -22,5 +22,4 @@ class CryptoCurrencyNetworkDataSource @Inject constructor(
 
     fun getAvailableBooksRxJava(): Observable<Response<AvailableBooksBaseResponse>> =
         api.getAvailableBooksRxJava()
-
 }

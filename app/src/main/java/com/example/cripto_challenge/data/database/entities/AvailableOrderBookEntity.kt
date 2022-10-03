@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 
 @Entity(tableName = "available_order_book_table")
-data class AvailableOrderBookEntity (
+data class AvailableOrderBookEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "book_code") var book_code: String? = null,

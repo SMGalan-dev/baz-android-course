@@ -7,8 +7,7 @@ import javax.inject.Inject
 
 class GetAvailableBooksRxJavaUseCase @Inject constructor(
     private val repository: CryptoCurrencyRepository
-)
-{
+) {
     operator fun invoke(): MutableLiveData<List<AvailableOrderBook>> =
-            repository.getAvailableBooksRxJava()
+        repository.getAvailableBooksRxJava()
 }

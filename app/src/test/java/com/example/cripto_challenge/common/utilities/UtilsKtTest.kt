@@ -4,38 +4,37 @@ import com.example.cripto_challenge.R
 import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import org.junit.Assert.*
-
 import org.junit.Test
 
 class UtilsKtTest {
 
     @Test
     fun `formatted book code to be displayed `() {
-        //Given
+        // Given
         val bookCodeStr = "btc_mxn"
 
-        //When
+        // When
         val result = bookCodeStr.toBookCodeFormat()
 
-        //Then
+        // Then
         assertEquals(result, "BTC/MXN")
     }
 
     @Test
     fun `formatted Double value into currency`() {
-        //Given
+        // Given
         val bookCodeStr: Double = 300.00
 
-        //When
+        // When
         val result = bookCodeStr.formatAsCurrency()
 
-        //Then
+        // Then
         assertEquals(result, "$300.00")
     }
 
     @Test
     fun toMXNAvailableOrderBookList() {
-        //Given
+        // Given
         val bookCodeList: List<AvailableOrderBookResponse> =
             listOf(
                 AvailableOrderBookResponse("btc_mxn"),
@@ -43,15 +42,19 @@ class UtilsKtTest {
                 AvailableOrderBookResponse("btc_dll")
             )
 
-        //When
+        // When
         val result = bookCodeList.toMXNAvailableOrderBookList()
 
-        //Then
-        assert(result.contains(AvailableOrderBook(
-            book_code = "btc_mxn",
-            book_name = "Bitcoin",
-            book_format_code = "BTC/MXN",
-            book_logo = R.drawable.ic_bitcoin_logo
-        )))
+        // Then
+        assert(
+            result.contains(
+                AvailableOrderBook(
+                    book_code = "btc_mxn",
+                    book_name = "Bitcoin",
+                    book_format_code = "BTC/MXN",
+                    book_logo = R.drawable.ic_bitcoin_logo
+                )
+            )
+        )
     }
 }

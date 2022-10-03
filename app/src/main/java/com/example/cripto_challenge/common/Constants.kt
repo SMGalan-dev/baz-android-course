@@ -16,5 +16,4 @@ object Constants {
     const val BASIC_ATTENTION_TOKEN_NAME = "Basic Attention Token"
     const val DAI_NAME = "Dai"
     const val USD_COIN_NAME = "USD coin"
-
 }

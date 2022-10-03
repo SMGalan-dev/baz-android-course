@@ -19,11 +19,12 @@ class OrderBookDetailFragment : Fragment() {
     private lateinit var binding: OrderBookDetailFragmentBinding
 
     private lateinit var bookCode: String
-    private val bidsListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
-    private val askListAdapter: OpenOrderListAdapter by lazy {OpenOrderListAdapter()}
+    private val bidsListAdapter: OpenOrderListAdapter by lazy { OpenOrderListAdapter() }
+    private val askListAdapter: OpenOrderListAdapter by lazy { OpenOrderListAdapter() }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = OrderBookDetailFragmentBinding.inflate(layoutInflater, container, false)
@@ -33,8 +34,9 @@ class OrderBookDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bookCode = arguments?.getString(getString(R.string.book_code)).orEmpty()
-        orderBookDetailVM.getTicker(bookCode,
-            error ={
+        orderBookDetailVM.getTicker(
+            bookCode,
+            error = {
                 (activity as MainActivity).noNetworkConnection(it)
             }
         )

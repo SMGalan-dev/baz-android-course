@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cripto_challenge.common.Constants
 import com.example.cripto_challenge.common.Constants.LINE_BREAK_VALUE
 import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.domain.model.OrderBook
@@ -20,8 +19,7 @@ import javax.inject.Inject
 class OrderBookDetailViewModel @Inject constructor(
     private val tickerUseCase: GetTickerUseCase,
     private val orderBookUseCase: GetOrderBookUseCase
-    ): ViewModel()
-{
+) : ViewModel() {
 
     private var _ticker = MutableLiveData<Ticker?>()
     private var _orderBook = MutableLiveData<OrderBook?>()
@@ -31,9 +29,9 @@ class OrderBookDetailViewModel @Inject constructor(
     val orderBook: LiveData<OrderBook?> get() = _orderBook
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun getTicker(book: String, error: (info:String)->Unit) {
+    fun getTicker(book: String, error: (info: String) -> Unit) {
         tickerUseCase.invoke(book = book).onEach { state ->
-            when(state) {
+            when (state) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
                     _ticker.value = state.data
@@ -45,16 +43,16 @@ class OrderBookDetailViewModel @Inject constructor(
                     _ticker.value = state.data
                     error(state.message.orEmpty())
                     getOrderBook(book) {
-                        error( state.message + LINE_BREAK_VALUE + it)
+                        error(state.message + LINE_BREAK_VALUE + it)
                     }
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun getOrderBook(book: String, error: (info:String)->Unit) {
+    private fun getOrderBook(book: String, error: (info: String) -> Unit) {
         orderBookUseCase.invoke(book = book).onEach {
-            when(it) {
+            when (it) {
                 is RequestState.Loading -> _isLoading.value = true
                 is RequestState.Success -> {
                     _orderBook.value = it.data
