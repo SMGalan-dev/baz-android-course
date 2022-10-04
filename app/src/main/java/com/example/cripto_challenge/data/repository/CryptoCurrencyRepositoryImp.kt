@@ -94,7 +94,7 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
 
     override fun getAvailableBooksRxJava() = remoteDataSource.getAvailableBooksRxJava()
 
-    private fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>) {
+    override fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>) {
         CoroutineScope(Dispatchers.IO).launch {
             localDataSource.getAllAvailableOrderBookFromDatabase().run {
                 if (this.isNullOrEmpty()) {

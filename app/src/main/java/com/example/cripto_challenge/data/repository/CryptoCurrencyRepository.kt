@@ -14,4 +14,5 @@ interface CryptoCurrencyRepository {
     fun getTicker(book: String): Flow<RequestState<Ticker>>
     fun getOrderBook(book: String): Flow<RequestState<OrderBook>>
     fun getAvailableBooksRxJava(): Observable<Response<AvailableBooksBaseResponse>>
+    fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>)
 }

@@ -9,6 +9,7 @@ import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.use_case.GetAvailableBooksRxJavaUseCase
 import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
+import com.example.cripto_challenge.domain.use_case.UpdateAvailableBooksDBUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AvailableBooksViewModel @Inject constructor(
     private val availableBooksUseCase: GetAvailableBooksUseCase,
-    private val availableBooksRxJavaUseCase: GetAvailableBooksRxJavaUseCase
+    private val availableBooksRxJavaUseCase: GetAvailableBooksRxJavaUseCase,
+    private val updateAvailableBooksDBUseCase: UpdateAvailableBooksDBUseCase
 ) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>?>()
@@ -38,12 +40,11 @@ class AvailableBooksViewModel @Inject constructor(
                     if (it != null && it.isSuccessful) {
                         with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()) {
                             this@apply.postValue(this)
+                            updateAvailableBooksDBUseCase.invoke(this)
                         }
                     }
                 }
-
         )
-
     }
 
     fun getAvailableBooks(error: (info: String) -> Unit) {
