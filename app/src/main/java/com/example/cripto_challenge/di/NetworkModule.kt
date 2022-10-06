@@ -8,6 +8,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -60,5 +63,9 @@ abstract class NetworkModule {
         @Provides
         fun repository(retrofit: Retrofit): BitsoServiceApi =
             retrofit.create(BitsoServiceApi::class.java)
+
+        @Singleton
+        @Provides
+        fun ioScheduler(): Scheduler = Schedulers.io()
     }
 }

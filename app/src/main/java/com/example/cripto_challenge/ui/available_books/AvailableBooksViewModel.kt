@@ -13,6 +13,7 @@ import com.example.cripto_challenge.domain.use_case.UpdateAvailableBooksDBUseCas
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class AvailableBooksViewModel @Inject constructor(
     private val availableBooksUseCase: GetAvailableBooksUseCase,
     private val availableBooksRxJavaUseCase: GetAvailableBooksRxJavaUseCase,
-    private val updateAvailableBooksDBUseCase: UpdateAvailableBooksDBUseCase
+    private val updateAvailableBooksDBUseCase: UpdateAvailableBooksDBUseCase,
+    private val  defaultScheduler: Scheduler = Schedulers.io()
 ) : ViewModel() {
 
     private var _availableOrderBookList = MutableLiveData<List<AvailableOrderBook>?>()
@@ -34,7 +36,7 @@ class AvailableBooksViewModel @Inject constructor(
     fun getAvailableBooksRxJava() = MutableLiveData<List<AvailableOrderBook>>().apply {
         CompositeDisposable().add(
             availableBooksRxJavaUseCase.invoke()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(defaultScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (it != null && it.isSuccessful) {

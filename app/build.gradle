@@ -41,6 +41,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.3.0'
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -76,6 +81,13 @@ dependencies {
 
     //Test
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation 'androidx.test:core:1.4.0' //ApplicationProvider.getApplicationContext()
+    testImplementation 'org.robolectric:robolectric:4.8'
+
     //truth
     testImplementation 'com.google.truth:truth:1.1.1'
     //Mockk
@@ -94,4 +106,5 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    generateStubs = true
 }

@@ -2,7 +2,6 @@ package com.example.cripto_challenge.data.repository
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.example.cripto_challenge.R
 import com.example.cripto_challenge.common.RequestState
 import com.example.cripto_challenge.common.utilities.isInternetAvailable
@@ -14,9 +13,6 @@ import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -116,7 +112,7 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         }
     }
 
-    private fun updateOrderBookDatabase(book: String, orderBook: OrderBook?) {
+    fun updateOrderBookDatabase(book: String, orderBook: OrderBook?) {
         CoroutineScope(Dispatchers.IO).launch {
             localDataSource.deleteOpenOrdersFromDatabase(book)
             localDataSource.insertOpenOrdersToDatabase(orderBook?.bids.toBidsEntityList(), orderBook?.asks.toAsksEntityList())
