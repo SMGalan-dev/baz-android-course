@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -12,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.cripto_challenge.MainActivity
 import com.example.cripto_challenge.R
 import com.example.cripto_challenge.common.adapters.AvailableBooksListAdapter
-import com.example.cripto_challenge.common.utilities.isInternetAvailable
 import com.example.cripto_challenge.databinding.AvailableOrderBooksFragmentBinding
 
 class AvailableOrderBooksFragment : Fragment() {
@@ -64,7 +62,6 @@ class AvailableOrderBooksFragment : Fragment() {
             criptoCurrencyVM.getAvailableBooksRxJava(
                 error = {
                     (activity as MainActivity).noNetworkConnection(it)
-                    getAvailableBooks()
                 }
             ).observe(viewLifecycleOwner) { list ->
                 if (list?.isNullOrEmpty() == true) progressAvailableOrderBook.visibility = View.VISIBLE

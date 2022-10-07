@@ -9,10 +9,12 @@ import com.example.cripto_challenge.common.utilities.toMXNAvailableOrderBookList
 import com.example.cripto_challenge.data.database.data_source.CryptoCurrencyLocalDataSource
 import com.example.cripto_challenge.data.database.entities.*
 import com.example.cripto_challenge.data.remote.data_source.CryptoCurrencyNetworkDataSource
+import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 import com.example.cripto_challenge.domain.model.OrderBook
 import com.example.cripto_challenge.domain.model.Ticker
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.reactivex.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -88,7 +90,17 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
         }
     }
 
-    override fun getAvailableBooksRxJava() = remoteDataSource.getAvailableBooksRxJava()
+    override fun getAvailableBooksRxJava(): Single<AvailableBooksBaseResponse> =
+        if (isInternetAvailable(context))
+            remoteDataSource.getAvailableBooksRxJava().let {
+                Single.just(
+                    it.blockingSingle().body()
+                )
+            }
+        else Single.just(getAllAvailableOrderBookRxJavaFromDatabase())
+
+    private fun getAllAvailableOrderBookRxJavaFromDatabase(): AvailableBooksBaseResponse =
+        localDataSource.getAllAvailableOrderBookFromDatabase().let {it.toAvailableOrderBookBaseResponse()}
 
     override fun updateAvailableOrderBookDatabase(bookList: List<AvailableOrderBook>) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -119,4 +131,39 @@ class CryptoCurrencyRepositoryImp @Inject constructor(
             Log.i("CriptoCurrencyDataBase", "OrderBook inserted")
         }
     }
+
+
+
+    /*
+
+    override fun getAvailableBooksRxJava(): Single<AvailableBooksBaseResponse> { //Return Single
+        val al0: Single<AvailableBooksBaseResponse> = Single.just(getAllAvailableOrderBookRxJavaFromDatabase())
+
+        val al: Single<AvailableBooksBaseResponse> = remoteDataSource.getAvailableBooksRxJava().let {
+            Single.just(
+                it.singleOrError().flatMap {
+                    Single.just(it.body().availableBooksListData.toMXNAvailableOrderBookList() )
+                }
+            )
+
+            //it.body().availableBooksListData.toMXNAvailableOrderBookList() )
+           /*
+            it.singleOrError().flatMap {
+
+                Single.just(it.body().availableBooksListData.toMXNAvailableOrderBookList() )
+            }*/
+
+        }
+
+        val al1: Single<AvailableBooksBaseResponse> = remoteDataSource.getAvailableBooksRxJava().let {
+            Single.just(
+                it.blockingSingle().body()
+            )
+        }
+
+        return
+    }
+     */
+
+
 }

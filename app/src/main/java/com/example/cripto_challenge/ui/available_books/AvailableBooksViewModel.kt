@@ -40,8 +40,9 @@ class AvailableBooksViewModel @Inject constructor(
                 .subscribeOn(defaultScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                    onNext = {
-                        with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()) {
+                    onSuccess = {
+                        with(it?.availableBooksListData.toMXNAvailableOrderBookList()) {
+                            if (this.isNullOrEmpty()) error("No stored data")
                             this@apply.postValue(this)
                             updateAvailableBooksDBUseCase.invoke(this)
                         }

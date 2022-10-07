@@ -3,6 +3,9 @@ package com.example.cripto_challenge.data.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookResponse
+import com.example.cripto_challenge.data.remote.dto.base.ErrorResponse
+import com.example.cripto_challenge.data.remote.dto.response.AvailableBooksBaseResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
 
 @Entity(tableName = "available_order_book_table")
@@ -38,6 +41,22 @@ fun List<AvailableOrderBookEntity>?.toAvailableOrderBookListFromEntity() = mutab
                     book_name = it.book_name,
                     book_format_code = it.book_format_code,
                     book_logo = it.book_logo
+                )
+            )
+        }
+    }
+
+fun List<AvailableOrderBookEntity>?.toAvailableOrderBookBaseResponse() =
+    AvailableBooksBaseResponse(
+        availableBooksListData = this.toAvailableOrderBookResponseListFromEntity()
+    )
+
+fun List<AvailableOrderBookEntity>?.toAvailableOrderBookResponseListFromEntity() = mutableListOf<AvailableOrderBookResponse>()
+    .apply {
+        this@toAvailableOrderBookResponseListFromEntity?.forEach {
+            this.add(
+                AvailableOrderBookResponse(
+                    book = it.book_code
                 )
             )
         }
