@@ -3,76 +3,153 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:padding="16dp"
     android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progress_detail_order_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/order_book_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="BOOK"
-        android:textAlignment="center"
-        android:textSize="30sp"
+        android:text="@string/book"
+        android:layout_marginStart="5dp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/tv_book_code"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_book_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/book_code_text"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_orange_dark"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/view_line"/>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/book_high_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="High_price"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/order_book_name"
+        android:background="@android:color/darker_gray" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/book_low_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
-        android:text="low price"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/book_high_price" />
+    <View
+        android:id="@+id/view_title_space_line"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        app:layout_constraintTop_toBottomOf="@id/view_line"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/book_last_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:text="Last Price"
-        android:textAlignment="center"
-        android:textSize="18sp"
+        android:layout_marginStart="5dp"
+        android:text="@string/last_price"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_book_name" />
+        app:layout_constraintEnd_toStartOf="@id/book_high_price"
+        app:layout_constraintTop_toTopOf="@id/book_high_price"
+        app:layout_constraintBottom_toBottomOf="@id/book_low_price"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@android:drawable/arrow_up_float"
+        android:tint="@android:color/holo_green_light"
+        android:paddingTop="8dp"
+        app:layout_constraintTop_toTopOf="@id/book_high_price"
+        app:layout_constraintBottom_toBottomOf="@id/book_high_price"
+        app:layout_constraintEnd_toStartOf="@id/book_high_price" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/book_high_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/high_price"
+        android:textAlignment="textEnd"
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_title_space_line"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@android:drawable/arrow_down_float"
+        android:tint="@android:color/holo_red_dark"
+        app:layout_constraintTop_toTopOf="@id/book_low_price"
+        app:layout_constraintBottom_toBottomOf="@id/book_low_price"
+        app:layout_constraintEnd_toStartOf="@id/book_low_price" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/book_low_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/low_price"
+        android:textAlignment="textEnd"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ll_bids_asks"/>
 
     <LinearLayout
+        android:id="@+id/ll_bids_asks"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="16dp"
+        android:paddingTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/book_last_price"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".75"
         android:orientation="vertical">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_bids"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:text="Bids"
-            android:textSize="18sp"
+            android:text="@string/bids"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/book_last_price" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/price"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/amount"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_order_bids"
@@ -85,12 +162,34 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:text="Asks"
-            android:textSize="18sp"
+            android:text="@string/asks"
+            android:textSize="22sp"
             android:textStyle="bold"
+            android:paddingTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/book_last_price" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/price"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/amount"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_order_asks"

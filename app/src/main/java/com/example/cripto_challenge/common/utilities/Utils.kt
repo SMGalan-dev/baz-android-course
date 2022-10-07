@@ -1,30 +1,68 @@
 package com.example.cripto_challenge.common.utilities
 
-import com.example.cripto_challenge.R
-import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookDto
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import com.example.cripto_challenge.common.Constants
+import com.example.cripto_challenge.common.Constants.DIAGONAL_VALUE
+import com.example.cripto_challenge.common.Constants.UNDERSCORE_VALUE
+import com.example.cripto_challenge.data.remote.dto.base.AvailableOrderBookResponse
 import com.example.cripto_challenge.domain.model.AvailableOrderBook
+import java.text.NumberFormat
 
-fun List<AvailableOrderBookDto>?.toMXNAvailableOrderBookList() = mutableListOf<AvailableOrderBook>()
+fun String?.toBookCodeFormat(): String =
+    this?.replace(UNDERSCORE_VALUE, DIAGONAL_VALUE)?.uppercase().orEmpty()
+
+fun Double.formatAsCurrency(): String = NumberFormat.getCurrencyInstance().format(this)
+
+fun List<AvailableOrderBookResponse>?.toMXNAvailableOrderBookList() = mutableListOf<AvailableOrderBook>()
     .apply {
         this@toMXNAvailableOrderBookList?.forEach {
             if (it.book?.contains("mxn") == true) this.add(it.toMXNAvailableOrderBook())
         }
     }
 
+fun String?.toBookName(): String = when (this) {
+    BookType.BITCOIN.value -> Constants.BITCOIN_NAME
+    BookType.ETHEREUM.value -> Constants.ETHEREUM_NAME
+    BookType.XRP.value -> Constants.XRP_NAME
+    BookType.LITECOIN.value -> Constants.LITECOIN_NAME
+    BookType.BITCOIN_CASH.value -> Constants.BITCOIN_CASH_NAME
+    BookType.TRUEUSD.value -> Constants.TRUE_USD_NAME
+    BookType.DECETRALAND.value -> Constants.DECENTRALAND_NAME
+    BookType.BASIC_ATENTION_TOKEN.value -> Constants.BASIC_ATTENTION_TOKEN_NAME
+    BookType.DAI.value -> Constants.DAI_NAME
+    BookType.USD_COIN.value -> Constants.USD_COIN_NAME
+    else -> orEmpty()
+}
 
-fun setLogo(book: String): Int {
-    val icon = when(book) {
-        BookType.BITCOIN.value -> R.drawable.ic_bitcoin_logo
-        BookType.ETHEREUM.value -> R.drawable.ic_ethereum_logo
-        BookType.XRP.value -> R.drawable.ic_xrp_logo
-        BookType.LITECOIN.value -> R.drawable.ic_litecoin_logo
-        BookType.BITCOIN_CASH.value -> R.drawable.ic_bitcoin_cash_logo
-        BookType.TRUEUSD.value -> R.drawable.ic_trueusd_logo
-        BookType.DECETRALAND.value -> R.drawable.ic_decentraland_logo
-        BookType.BASIC_ATENTION_TOKEN.value -> R.drawable.ic_bat_logo
-        BookType.DAI.value -> R.drawable.ic_dai_logo
-        BookType.USD_COIN.value -> R.drawable.ic_usd_coin_logo
-        else -> android.R.drawable.ic_dialog_info
+fun isInternetAvailable(context: Context): Boolean {
+    var result = false
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+            connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    } else {
+        connectivityManager.run {
+            connectivityManager.activeNetworkInfo?.run {
+                result = when (type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
     }
-    return icon
+
+    return result
 }

@@ -1,10 +1,7 @@
 package com.example.cripto_challenge.domain.model
 
-import java.util.*
-
-class OrderBook (
+class OrderBook(
+    var book: String? = null,
     var asks: List<OpenOrder>? = null,
-    var bids: List<OpenOrder>? = null,
-    var updated_at: Date? = null,
-    var sequence: Int? = null
+    var bids: List<OpenOrder>? = null
 )
