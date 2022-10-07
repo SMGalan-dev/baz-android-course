@@ -11,9 +11,10 @@ import com.example.cripto_challenge.domain.use_case.GetAvailableBooksRxJavaUseCa
 import com.example.cripto_challenge.domain.use_case.GetAvailableBooksUseCase
 import com.example.cripto_challenge.domain.use_case.UpdateAvailableBooksDBUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.Scheduler
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -33,19 +34,22 @@ class AvailableBooksViewModel @Inject constructor(
     val availableOrderBookList: LiveData<List<AvailableOrderBook>?> get() = _availableOrderBookList
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun getAvailableBooksRxJava() = MutableLiveData<List<AvailableOrderBook>>().apply {
+    fun getAvailableBooksRxJava(error: (info: String) -> Unit) = MutableLiveData<List<AvailableOrderBook>>().apply {
         CompositeDisposable().add(
             availableBooksRxJavaUseCase.invoke()
                 .subscribeOn(defaultScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (it != null && it.isSuccessful) {
+                .subscribeBy(
+                    onNext = {
                         with(it.body()?.availableBooksListData.toMXNAvailableOrderBookList()) {
                             this@apply.postValue(this)
                             updateAvailableBooksDBUseCase.invoke(this)
                         }
-                    }
-                }
+                    },
+                    onError = {
+                        error(it.message.orEmpty())
+                    },
+                )
         )
     }
 
